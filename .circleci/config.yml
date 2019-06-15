@@ -13,6 +13,7 @@ jobs:
       - image: circleci/openjdk:8-jdk
 
     steps:
+      - checkout
       - run: ./.circleci/prepare_docker_build.sh
 
   docker-build:
@@ -20,6 +21,7 @@ jobs:
       - image: docker/18
 
     steps:
+      - checkout
       - run: ./.circleci/docker_build.sh
 
 workflows:
