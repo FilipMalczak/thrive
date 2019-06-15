@@ -9,7 +9,6 @@ buildscript {
         springBootAdminVersion = "2.1.3"
         gitInfoVersion     = '2.0.0'
         lombokVersion      = "2.1"
-
     }
     repositories {
         mavenCentral()
@@ -24,6 +23,10 @@ buildscript {
         classpath 'com.google.guava:guava:20.0'
 
     }
+}
+
+ext {
+    containerizationGroup = "containerization"
 }
 
 subprojects {
@@ -100,6 +103,10 @@ subprojects {
     }
 
     pluginManager.withPlugin("org.springframework.boot") {
+        ext {
+            dockerized = true
+        }
+
         project.springBoot {
             buildInfo {
                 //todo it would be nice to inject git and build data to manifest as well
@@ -122,9 +129,63 @@ subprojects {
         project.bootJar {
             classifier "boot"
         }
+
+        task generateDockerfile(
+            group: containerizationGroup,
+            description: "Creates a Dockerfile in project directory"
+        ) {
+            doFirst {
+                new File(project.projectDir, "Dockerfile").text = """
+FROM openjdk:8-jre-alpine
+
+LABEL maintainer="Filip Malczak (filip.malczak@gmail.com)"
+
+WORKDIR /var/opt/${project.name}
+
+COPY ./build/libs/${project.name}-${project.version}-boot.jar ./${project.name}-${project.version}-boot.jar
+
+ENTRYPOINT ["java","-jar","/var/opt/${project.name}/${project.name}-${project.version}-boot.jar"] 
+""" //todo: JAVA_OPTS
+            }
+        }
     }
 
+    task writeVersion(
+        group: containerizationGroup,
+        description: "Writes project version to <subproject build dir>/generated/meta/version.txt"
+    ) {
+        doFirst {
+            def metaDir = new File(project.buildDir, "generated/meta")
+            metaDir.mkdirs()
+            new File(metaDir, "version.txt").text = project.version
+        }
+    }
+}
 
+def dockerizedSubprojects() {
+    subprojects
+        .findAll {
+            try {
+                it.dockerized
+            } catch (MissingPropertyException e){
+                false
+            }
+        }
+}
+
+//fixme it will work as long as no-one will change project name; project names need to be the same as dir names and only 1-level hierarchy is allowed for now
+task listDockerizedProjectsDirectories(
+    group: containerizationGroup,
+    description: "Writes dockerized subproject names to <root project build dir>/dockerizedProjects.txt, one per line"
+) {
+    doFirst {
+        project.buildDir.mkdirs()
+        new File(project.buildDir, "dockerizedProjects.txt").text = dockerizedSubprojects()
+            .collect {
+                println "Found dockerized project ${it.name}"
+                it.name
+            }.join "\n"
+    }
 }
 
 wrapper {
