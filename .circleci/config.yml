@@ -19,12 +19,12 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-        at: .
+          at: .
       - run: ./.circleci/prepare_docker_build.sh
       - persist_to_workspace:
-        root: .
-        paths:
-          - "build/generated/meta"
+          root: .
+          paths:
+            - "build/generated/meta"
 
   docker-build:
     machine:
@@ -34,7 +34,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-        at: .
+          at: .
       - run: ./.circleci/docker_build.sh
 
 workflows:
