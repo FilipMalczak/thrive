@@ -1,12 +1,31 @@
 version: 2
 jobs:
-  build:
+  java-build:
     docker:
       - image: circleci/openjdk:8-jdk
 
     steps:
       - checkout
-
       - run: ./gradlew clean build
 
-      - run: ./.circleci/build_docker_images.sh
+  prepare-docker-build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    steps:
+      - run: ./.circleci/prepare_docker_build.sh
+
+  docker-build:
+    docker:
+      - image: docker/18
+
+    steps:
+      - run: ./.circleci/docker_build.sh
+
+workflows:
+  version: 2
+  build-all:
+    jobs:
+      - java-build
+      - prepare-docker-build
+      - docker-build
