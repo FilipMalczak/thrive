@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    zookeeper:
+      connect-string: ${thrive.zookeeper.host:zookeeper}:${thrive.zookeeper.port:2181}

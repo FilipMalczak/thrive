@@ -1,0 +1,9 @@
+apply plugin: "org.springframework.boot"
+
+//todo at some point I'll need a proper discovery service, but for now it's quite sufficient
+
+dependencies {
+    implementation "de.codecentric:spring-boot-admin-starter-server"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation project(":thrive-common")
+}

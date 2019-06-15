@@ -1,0 +1,9 @@
+dependencies {
+//    api('org.springframework.cloud:spring-cloud-starter-zookeeper-discovery')
+    api('org.springframework.cloud:spring-cloud-starter-zookeeper-all')
+    api "io.projectreactor.kafka:reactor-kafka"
+    api 'org.springframework.boot:spring-boot-starter-webflux'
+    api 'org.springframework.boot:spring-boot-starter-actuator'
+}
+
+//todo admin version, probably same with gateway 

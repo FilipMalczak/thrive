@@ -1,0 +1,6 @@
+rootProject.name = 'thrive-parent'
+
+include "thrive-common"
+include "thrive-admin"
+include "thrive-gateway"
+include "thrive-docs"
