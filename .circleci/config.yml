@@ -27,5 +27,9 @@ workflows:
   build-all:
     jobs:
       - java-build
-      - prepare-docker-build
-      - docker-build
+      - prepare-docker-build:
+          requires:
+            - java-build
+      - docker-build:
+          requires:
+            - prepare-docker-build
