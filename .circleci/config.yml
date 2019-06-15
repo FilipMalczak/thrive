@@ -18,7 +18,7 @@ jobs:
 
   docker-build:
     docker:
-      - image: docker/18
+      - image: docker:18
 
     steps:
       - checkout
