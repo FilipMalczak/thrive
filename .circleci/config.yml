@@ -1,50 +1,15 @@
 version: 2
 jobs:
-  java-build:
-    docker:
-      - image: circleci/openjdk:8-jdk
-
-    steps:
-      - checkout
-      - run: ./gradlew clean build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "*/build/libs/*"
-
-  prepare-docker-build:
-    docker:
-      - image: circleci/openjdk:8-jdk
-
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: ./.circleci/prepare_docker_build.sh
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "build/generated/meta"
-
-  docker-build:
+  build:
     machine:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true
 
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run: curl -s "https://get.sdkman.io" | bash
+      - run: source "$HOME/.sdkman/bin/sdkman-init.sh"
+      - run: sdk use java 8.0.212-zulu
+      - run: ./gradlew clean build
+      - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
-
-workflows:
-  version: 2
-  build-all:
-    jobs:
-      - java-build
-      - prepare-docker-build:
-          requires:
-            - java-build
-      - docker-build:
-          requires:
-            - prepare-docker-build
