@@ -7,9 +7,7 @@ jobs:
 
     steps:
       - checkout
-      - run: curl -s "https://get.sdkman.io" | bash
-      - run: source "/home/circleci/.sdkman/bin/sdkman-init.sh"
-      - run: sdk use java 8.0.212-zulu
+      - run: java -version
       - run: ./gradlew clean build
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
