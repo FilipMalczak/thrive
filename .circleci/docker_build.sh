@@ -10,5 +10,5 @@ set -ex
 
 for NAME in $(cat $ROOT_DIR/build/dockerizedProjects.txt)
 do
-    docker build $ROOT_DIR/$NAME -t filipmalczak/$NAME:$VERSION
+    docker build -t filipmalczak/$NAME:$VERSION $ROOT_DIR/$NAME
 done
