@@ -3,6 +3,8 @@
 HERE="$(realpath $(dirname "$0"))"
 ROOT_DIR=$HERE/..
 
+set -ex
+
 $ROOT_DIR/gradlew listDockerizedProjectsDirectories
 
 for NAME in $(cat $ROOT_DIR/build/dockerizedProjects.txt)

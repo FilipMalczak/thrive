@@ -6,6 +6,8 @@
 HERE="$(realpath $(dirname "$0"))"
 ROOT_DIR=$HERE/..
 
+set -ex
+
 for NAME in $(cat $ROOT_DIR/build/dockerizedProjects.txt)
 do
     docker build $ROOT_DIR/$NAME -t filipmalczak/$NAME:$VERSION
