@@ -7,3 +7,19 @@ services:
       - "2181:2181"
       - "2888:2888"
       - "3888:3888"
+
+  kafka:
+    environment:
+      #fixme external listener is not working
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    ports:
+      - "29092:29092"
+
+  #todo extract docker-compose-ui.yml
+  #maybe admin should go there as well?
+  kafka-ui:
+    image: sourcelaborg/kafka-webview
+    ports:
+      - "2222:8080"

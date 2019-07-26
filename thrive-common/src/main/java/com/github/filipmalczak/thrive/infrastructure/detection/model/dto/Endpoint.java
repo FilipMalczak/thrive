@@ -8,7 +8,7 @@ import java.util.Optional;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Endpoint {
-    //todo - replace with synthethic getter and KnowinglyInstance
+    //todo - replace with synthethic getter and ThriveInstance
     String serviceAddress;
     Optional<HttpMethod> method;
     String path;

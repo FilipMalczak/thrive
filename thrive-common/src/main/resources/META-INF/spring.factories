@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.filipmalczak.thrive.infrastructure.KnowinglyInfrastructureAutoconfigure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.filipmalczak.thrive.infrastructure.ThriveAutoconfigure

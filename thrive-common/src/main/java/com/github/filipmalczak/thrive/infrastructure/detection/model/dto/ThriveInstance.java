@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.util.Set;
 
 @Value
-public class KnowinglyInstance {
+public class ThriveInstance {
     String address;
     @Accessors(fluent = true)
     boolean hasApi;

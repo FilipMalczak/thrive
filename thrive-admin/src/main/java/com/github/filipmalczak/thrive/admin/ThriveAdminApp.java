@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 @EnableAdminServer
 @SpringBootApplication
-public class KnowinglyAdminApp {
+public class ThriveAdminApp {
     public static void main(String[] args) {
-        SpringApplication.run(KnowinglyAdminApp.class, args);
+        SpringApplication.run(ThriveAdminApp.class, args);
     }
 }

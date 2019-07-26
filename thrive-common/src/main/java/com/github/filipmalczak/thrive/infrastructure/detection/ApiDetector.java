@@ -1,7 +1,7 @@
 package com.github.filipmalczak.thrive.infrastructure.detection;
 
 import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.Endpoint;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.KnowinglyInstance;
+import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.ThriveInstance;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.http.SwaggerDocs;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,10 @@ public class ApiDetector {
     public static final String WEBSOCKET_CAPABILITY = CAPABILITY_PREFIX+"websocket";
 
     public Flux<Endpoint> findEndpoints(){
-        return getInstances().filter(KnowinglyInstance::hasApi).flatMap(this::extractEndpoints);
+        return getInstances().filter(ThriveInstance::hasApi).flatMap(this::extractEndpoints);
     }
 
-    public Flux<KnowinglyInstance> getInstances(){
+    public Flux<ThriveInstance> getInstances(){
         return Flux.fromStream(
                 discoveryClient
                     .getServices()
@@ -44,11 +44,13 @@ public class ApiDetector {
                         discoveryClient.getInstances(sid).stream()
                     )
             )
-            .map(this::translate);
+            .log("raw instances")
+            .map(this::translate)
+            .log("translated instances");
     }
 
-    private KnowinglyInstance translate(ServiceInstance instance){
-        return new KnowinglyInstance(
+    private ThriveInstance translate(ServiceInstance instance){
+        return new ThriveInstance(
     Optional.ofNullable(instance.getScheme()).orElse("http")
                 +"://"
                 +instance.getHost()
@@ -66,7 +68,7 @@ public class ApiDetector {
         return result;
     }
 
-    public Flux<Endpoint> extractEndpoints(KnowinglyInstance instance){
+    public Flux<Endpoint> extractEndpoints(ThriveInstance instance){
         Flux<Endpoint> result = Flux.empty();
         if (instance.hasSwagger())
             result = result.thenMany(endpointsFromSwagger(instance));
@@ -76,7 +78,7 @@ public class ApiDetector {
 
     }
 
-    private Flux<Endpoint> endpointsFromSwagger(KnowinglyInstance instance){
+    private Flux<Endpoint> endpointsFromSwagger(ThriveInstance instance){
         return webClient
             .get()
             .uri(instance.getAddress()+"/v2/api-docs?group=api")
@@ -99,7 +101,7 @@ public class ApiDetector {
             );
     }
 
-    private Flux<Endpoint> endpointsFromWs(KnowinglyInstance instance){
+    private Flux<Endpoint> endpointsFromWs(ThriveInstance instance){
         return Flux.fromIterable(instance.getWebsocketPaths())
             .map(path -> new Endpoint(instance.getAddress(), path));
     }

@@ -1,12 +1,11 @@
 package com.github.filipmalczak.thrive.swagger;
 
+import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.ThriveInstance;
+import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
 import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.KnowinglyInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +24,9 @@ public class SwaggerController {
     @Autowired
     private ApiDetector apiDetector;
 
+    @Autowired
+    private ServiceObserver observer;
+
     @Value("${thrive.baseUrl:localhost:8080}")
     private String baseUrl;
 
@@ -32,19 +34,21 @@ public class SwaggerController {
     public void init(){
         log.info("INIT");
         _init().log("INIT").subscribe();
+        observer.watchChanges().log("changes").flatMap(x -> _init().log("OBSERVED")).subscribe();
     }
 
-    @EventListener(InstanceRegisteredEvent.class)
-    public void handler(InstanceRegisteredEvent e){
-        log.info("HANDLER "+e.hashCode()+" :: "+e);
-        _init().log("HANDLER "+e.hashCode()).subscribe();
-    }
+//    @EventListener(InstanceRegisteredEvent.class)
+//    public void handler(InstanceRegisteredEvent e){
+//        log.info("HANDLER "+e.hashCode()+" :: "+e);
+//        _init().log("HANDLER "+e.hashCode()).subscribe();
+//    }
+
 
     public Mono<Void> _init(){
         return apiDetector
             .getInstances()
             .filter(i -> i.hasApi() && i.hasSwagger())
-            .map(KnowinglyInstance::getAddress)
+            .map(ThriveInstance::getAddress)
             .log("address")
             .collectList()
             .log("addresses")

@@ -2,7 +2,9 @@ package com.github.filipmalczak.thrive.swagger
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 
+@Slf4j
 class SwaggerMerger {
     String getMergedDocs(String baseUrl, List<String> urls){
         def slurper = new JsonSlurper()
@@ -10,9 +12,9 @@ class SwaggerMerger {
         json.host = baseUrl
         json.tags = []
         json.paths = [:]
-        json.info.description = this.class.getResource("/swagger-description.md").text
         //todo missing schemes (http(s)), securityDefinitions
         //todo document websockets as externalDocs
+        //todo same with other protocols
         json.definitions = [:]
         urls.each { url ->
             def fullUrl = url+"/v2/api-docs?group=api"
