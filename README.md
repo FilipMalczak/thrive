@@ -1,5 +1,11 @@
 # Thrive
 
+> CircleCI status:
+>
+> `master` [![CircleCI](https://circleci.com/gh/FilipMalczak/thrive/tree/master.svg?style=svg)](https://circleci.com/gh/FilipMalczak/thrive/tree/master)
+>
+> `dev` [![CircleCI](https://circleci.com/gh/FilipMalczak/thrive/tree/dev.svg?style=svg)](https://circleci.com/gh/FilipMalczak/thrive/tree/dev)
+
 Thrive is a highly opinionated infrastructure framework for Spring Boot/Cloud 
 based microservices systems.
 
@@ -25,8 +31,8 @@ change hostnames and ports, as they are just container names and default service
 ## ToDo
 
 - figure out what to do with YML files in repository root
-- write e2e tests (see below), extend CircleCI config to run them
 - create another test service, preferably make it cooperate with existing one with a webhook and/or messaging
+- expand tests
 - create BOM module for lib version alignment
 - add docker image publishing (push to dockerhub) from CI (at `master` and `dev` branches; make sure that test services aren't published)
 - publish BOM to some Maven repo (probably JFrog)
@@ -37,7 +43,7 @@ change hostnames and ports, as they are just container names and default service
 
 ## Test scenarios
 
-1. run 2 services in docker-compose, run their acceptance suites (in parallel or interleaved) against gateway
-2. run 1 service in docker-compose, another locally, ditto
+1. run 2 services in docker-compose, run their acceptance suites (in parallel or interleaved) against gateway (done)
+2. run 1 service in docker-compose, another locally, ditto (done; more variations still needed)
 3. (once thrive is more configurable) (1) and (2), but after tweaking thrive config (ports, etc) 
 4. (1) and (2), but check merged swaggerfiles
