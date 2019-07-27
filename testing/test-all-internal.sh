@@ -9,7 +9,7 @@ ROOT_DIR=$HERE/..
 
 $ROOT_DIR/gradlew build generateDockerfile
 
-python3 -m pip install -r $HERE/requirements.txt
+python -m pip install -r $HERE/requirements.txt
 
 export ROOT_PROJECT=$ROOT_DIR
 
@@ -17,7 +17,7 @@ docker-compose -f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.
 docker-compose -f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml up --build items-dependencies
 
 set +e
-python3 $HERE/items_suite.py
+python $HERE/items_suite.py
 
 EXIT=$?
 

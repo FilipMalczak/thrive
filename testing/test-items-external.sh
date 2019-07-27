@@ -10,7 +10,7 @@ mkdir -p $TEST_WORKSPACE
 
 $ROOT_DIR/gradlew build generateDockerfile
 
-python3 -m pip install -r $HERE/requirements.txt
+python -m pip install -r $HERE/requirements.txt
 
 wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O $TEST_WORKSPACE/wait-for-dep.sh
 
@@ -26,7 +26,7 @@ ITEMS_PID=$!
 $TEST_WORKSPACE/wait-for-dep.sh localhost:8085
 
 set +e
-python3 $HERE/items_suite.py
+python $HERE/items_suite.py
 
 EXIT=$?
 
