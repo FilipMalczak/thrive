@@ -130,6 +130,7 @@ subprojects {
             classifier "boot"
         }
 
+        //todo clean should remove this files, same with dockerized project list
         task generateDockerfile(
             group: containerizationGroup,
             description: "Creates a Dockerfile in project directory"

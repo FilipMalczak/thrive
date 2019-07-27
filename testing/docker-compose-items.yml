@@ -1,0 +1,16 @@
+version: "3.5"
+
+services:
+  items:
+    build: ${ROOT_PROJECT}/test-items
+
+  items-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - items
+    links:
+      - items
+    environment:
+      - SLEEP_LENGTH=1
+      - TIMEOUT_LENGTH=60
+    command: items:8080

@@ -10,4 +10,5 @@ jobs:
       - run: ./gradlew clean build
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
-      - run: echo 'Missing steps\n - run e2e tests (run example services, see if they are registered and available)\n - push images to dockerhub'
+      - run: ./testing/test-all-internal.sh
+      - run: ./testing/test-items-external.sh

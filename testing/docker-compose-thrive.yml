@@ -18,13 +18,13 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   spring-boot-admin:
-    build: ./thrive-admin
+    build: ${ROOT_PROJECT}/thrive-admin
     #todo do I want to always expose admin? maybe move ports to ...-local.yml?
     ports:
-      - 1111:8080
+      - "1111:8080"
 
   docs:
-    build: ./thrive-docs
+    build: ${ROOT_PROJECT}/thrive-docs
     environment:
       # redundant, there is such a default, but writing it down so it won't get lost
       THRIVE_BASE_URL: localhost:8080
@@ -35,6 +35,27 @@ services:
       API_URL: /docs/v1/swagger
 
   gateway:
-    build: ./thrive-gateway
+    build: ${ROOT_PROJECT}/thrive-gateway
     ports:
       - "8080:8080"
+
+  thrive-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - zookeeper
+      - kafka
+      - spring-boot-admin
+      - docs
+      - swaggerui
+      - gateway
+    links:
+      - zookeeper
+      - kafka
+      - spring-boot-admin
+      - docs
+      - swaggerui
+      - gateway
+    environment:
+      - SLEEP_LENGTH=1
+      - TIMEOUT_LENGTH=60
+    command: zookeeper:2181 kafka:9092 spring-boot-admin:8080 docs:8080 swaggerui:8080 gateway:8080
