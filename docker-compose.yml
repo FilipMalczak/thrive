@@ -20,6 +20,7 @@ services:
   spring-boot-admin:
     build: ./thrive-admin
     #todo do I want to always expose admin? maybe move ports to ...-local.yml?
+    #that impacts testing YMLs as well
     ports:
       - 1111:8080
 

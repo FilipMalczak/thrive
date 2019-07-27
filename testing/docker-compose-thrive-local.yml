@@ -3,10 +3,7 @@ version: "3.5"
 services:
   zookeeper:
     ports:
-      - "22:22"
       - "2181:2181"
-      - "2888:2888"
-      - "3888:3888"
 
   kafka:
     environment:
