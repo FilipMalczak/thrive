@@ -36,6 +36,9 @@ public class ItemsController {
         } else if (items.containsKey(item.getId())){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Item with ID="+item.getId()+" already exists!");
         }
+        log.info("WebClient: {}", webClient);
+        final String uri = "http://test-stats/api/v1/items/size";
+        log.info("URI: {}", uri);
         return Mono.just(item)
             .map(i -> {
                 items.put(i.getId(), i);
@@ -45,7 +48,7 @@ public class ItemsController {
             .then(
                 webClient
                     .post()
-                    .uri("http://test-stats/api/v1/items/size")
+                    .uri(uri)
                     .syncBody(item.getSize())
                     .exchange()
                     .map(r -> {
