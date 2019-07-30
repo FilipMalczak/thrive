@@ -1,12 +1,13 @@
 package com.github.filipmalczak.thrive.gateway;
 
-import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
+import com.github.filipmalczak.thrive.ThriveService;
 import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.Endpoint;
+import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.CachingRouteLocator;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -19,7 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.annotation.PostConstruct;
 import java.util.logging.Level;
 
-@SpringBootApplication
+@ThriveService
 @Slf4j
 public class GatewayApp {
     @Autowired
@@ -31,19 +32,20 @@ public class GatewayApp {
     @Autowired
     private ServiceObserver observer;
 
-
     public static void main(String[] args){
         SpringApplication.run(GatewayApp.class, args);
     }
 
     @PostConstruct
+    @SneakyThrows
     public void init(){
         observer.watchChanges().doOnEach(x -> listen());
     }
 
-//    @EventListener(InstanceRegisteredEvent.class)
     @Scheduled(fixedDelay = 5 * 60 * 1000, initialDelay = 5 * 1000)
     public void listen(){
+        //todo refactor a bit
+        //todo add "im going down events", add configurability on when to refresh
         ((CachingRouteLocator)locator).refresh();
     }
 
@@ -56,11 +58,21 @@ public class GatewayApp {
             .log("Detected endpoints", Level.FINE)
             .reduce(
                 builder.routes(),
-                (b, e) -> b.route(r -> routeEndpoint(r, e))
+                (b, e) -> b.route(describe(e), r -> routeEndpoint(r, e))
             )
             .map(RouteLocatorBuilder.Builder::build)
             .flux()
             .flatMap(RouteLocator::getRoutes);
+    }
+
+    private String describe(Endpoint endpoint){
+        return endpoint.getMethod().map(m -> "["+m+"]").orElse("<webscocket>")+
+            "::"+
+            endpoint.getInstance().getName()+
+            "@"+
+            endpoint.getServiceAddress()+
+            "::"+
+            endpoint.getPath();
     }
 
     private Route.AsyncBuilder routeEndpoint(PredicateSpec r, Endpoint e){
@@ -79,7 +91,7 @@ public class GatewayApp {
     @Bean
     public RouteLocator docsRouteLocator(RouteLocatorBuilder builder){
         return builder.routes()
-            .route(r -> r
+            .route("docs", r -> r
                 .path("/docs/**")
                 .uri("http://docs:8080")
             )
@@ -89,12 +101,12 @@ public class GatewayApp {
     @Bean
     public RouteLocator swaggerRouteLocator(RouteLocatorBuilder builder){
         return builder.routes()
-            .route(r -> r
+            .route("swagger-ui", r -> r
                 .path("/swagger-ui.html")
                 .filters(f -> f.setPath("/"))
                 .uri("http://swaggerui:8080/")
             )
-            .route(r -> r
+            .route("swagger-paths", r -> r
                 .path("/swagger-ui*")
                 .uri("http://swaggerui:8080")
             )

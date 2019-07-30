@@ -1,6 +1,9 @@
 package com.github.filipmalczak.thrive.infrastructure.detection.model.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.Value;
 import org.springframework.http.HttpMethod;
 
 import java.util.Optional;
@@ -8,20 +11,27 @@ import java.util.Optional;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Endpoint {
-    //todo - replace with synthethic getter and ThriveInstance
-    String serviceAddress;
+    ThriveInstance instance;
     Optional<HttpMethod> method;
     String path;
 
-    public Endpoint(String serviceAddress, @NonNull HttpMethod method, String path) {
-        this.serviceAddress = serviceAddress;
+    public Endpoint(ThriveInstance instance, @NonNull HttpMethod method, String path) {
+        this.instance = instance;
         this.method = Optional.of(method);
         this.path = path;
     }
 
-    public Endpoint(String serviceAddress, String path) {
-        this.serviceAddress = serviceAddress;
+    public Endpoint(ThriveInstance instance, String path) {
+        this.instance = instance;
         this.method = Optional.empty();
         this.path = path;
+    }
+
+    public String getServiceName() {
+        return instance.getName();
+    }
+
+    public String getServiceAddress() {
+        return instance.getAddress();
     }
 }

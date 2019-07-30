@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.example.items;
+package com.github.filipmalczak.thrive.example.stats;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

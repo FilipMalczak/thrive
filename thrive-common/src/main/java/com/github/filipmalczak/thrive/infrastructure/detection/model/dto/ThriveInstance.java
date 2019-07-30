@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Value
 public class ThriveInstance {
+    String name;
     String address;
     @Accessors(fluent = true)
     boolean hasApi;

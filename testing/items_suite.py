@@ -1,14 +1,17 @@
 import unittest
-from requests import *
 from json import *
-from uuid import uuid4
 from random import randint
+from requests import *
+from uuid import uuid4
 
 randstr = lambda: str(uuid4())
 
 #todo organize into given/when/then
 class ItemsTests(unittest.TestCase):
     def test_creates_with_id(self):
+        resp = get("http://localhost:8080/api/v1/items/size/statistics")
+        self.assertEqual(resp.status_code, 200)
+        previous_stats = resp.json()
         id = randstr()
         name = randstr()
         size = randint(0, 1000)
@@ -27,8 +30,17 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         })
+        resp = get("http://localhost:8080/api/v1/items/size/statistics")
+        self.assertEqual(resp.status_code, 200)
+        new_stats = resp.json()
+        self.assertEqual(new_stats["total"], previous_stats["total"]+size)
+        self.assertEqual(new_stats["count"], previous_stats["count"]+1)
+
 
     def test_creates_without_id(self):
+        resp = get("http://localhost:8080/api/v1/items/size/statistics")
+        self.assertEqual(resp.status_code, 200)
+        previous_stats = resp.json()
         name = randstr()
         size = randint(0, 1000)
         resp = post("http://localhost:8080/api/v1/items", json={
@@ -46,6 +58,11 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         })
+        resp = get("http://localhost:8080/api/v1/items/size/statistics")
+        self.assertEqual(resp.status_code, 200)
+        new_stats = resp.json()
+        self.assertEqual(new_stats["total"], previous_stats["total"]+size)
+        self.assertEqual(new_stats["count"], previous_stats["count"]+1)
 
     def test_listing(self):
         id1 = randstr()
@@ -71,6 +88,7 @@ class ItemsTests(unittest.TestCase):
         result = resp.json()
         self.assertTrue(item1 in result)
         self.assertTrue(item2 in result)
+
 
 if __name__=="__main__":
     unittest.main()

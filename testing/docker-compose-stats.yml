@@ -1,0 +1,16 @@
+version: "3.5"
+
+services:
+  stats:
+    build: ${ROOT_PROJECT}/test-stats
+
+  stats-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - stats
+    links:
+      - stats
+    environment:
+      - SLEEP_LENGTH=1
+      - TIMEOUT_LENGTH=60
+    command: stats:8080

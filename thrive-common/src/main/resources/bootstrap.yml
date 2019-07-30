@@ -4,3 +4,7 @@ spring:
       enabled: false
     zookeeper:
       connect-string: ${thrive.zookeeper.host:zookeeper}:${thrive.zookeeper.port:2181}
+      discovery:
+        # we prefer IP over hostnames, because sometimes we want to run some
+        # services outside of compose project, so hostname is tricky to define
+        prefer-ip-address: true

@@ -4,4 +4,6 @@ include "thrive-common"
 include "thrive-admin"
 include "thrive-gateway"
 include "thrive-docs"
+
 include "test-items"
+include "test-stats"

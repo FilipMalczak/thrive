@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.example.items;
+package com.github.filipmalczak.thrive.common.swagger;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;

@@ -1,9 +1,11 @@
 package com.github.filipmalczak.thrive.infrastructure.detection;
 
+import com.github.filipmalczak.thrive.infrastructure.SimpleWebClient;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.Endpoint;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.ThriveInstance;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.http.SwaggerDocs;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -12,14 +14,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
 @Component
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApiDetector {
     @Autowired
+    @SimpleWebClient
     private WebClient webClient;
 
     @Autowired
@@ -51,6 +57,7 @@ public class ApiDetector {
 
     private ThriveInstance translate(ServiceInstance instance){
         return new ThriveInstance(
+            instance.getServiceId(),
     Optional.ofNullable(instance.getScheme()).orElse("http")
                 +"://"
                 +instance.getHost()
@@ -91,7 +98,7 @@ public class ApiDetector {
                         Flux.fromIterable(e.getValue().entrySet())
                             .map(e2 ->
                                 new Endpoint(
-                                    instance.getAddress(),
+                                    instance,
                                     HttpMethod.valueOf(e2.getKey().toUpperCase()),
                                     e.getKey()
                                 )
@@ -103,6 +110,6 @@ public class ApiDetector {
 
     private Flux<Endpoint> endpointsFromWs(ThriveInstance instance){
         return Flux.fromIterable(instance.getWebsocketPaths())
-            .map(path -> new Endpoint(instance.getAddress(), path));
+            .map(path -> new Endpoint(instance, path));
     }
 }

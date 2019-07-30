@@ -2,9 +2,7 @@ package com.github.filipmalczak.thrive.infrastructure;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * Utility for configuration classes. Allows for imperative autowiring, making autoconfig

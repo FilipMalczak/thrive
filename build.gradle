@@ -3,10 +3,10 @@ import java.time.ZoneId
 
 buildscript {
     ext {
-        springCloudReleaseTrain = 'Greenwich.RELEASE' // relates to Spring Boot 2.1.x
-        springDataReleaseTrain = 'Lovelace-RELEASE'
-        springBootVersion  = '2.1.3.RELEASE'
-        springBootAdminVersion = "2.1.3"
+        springCloudReleaseTrain = 'Greenwich.SR2' // relates to Spring Boot 2.1.x
+//        springDataReleaseTrain = 'Lovelace-RELEASE'
+        springBootVersion  = '2.1.6.RELEASE'
+        springBootAdminVersion = springBootVersion.split("[.]").take(3).join(".")
         gitInfoVersion     = '2.0.0'
         lombokVersion      = "2.1"
     }
@@ -56,8 +56,8 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-            mavenBom "io.r2dbc:r2dbc-bom:Arabba-M8" //fixme version -> ext
-//            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudReleaseTrain}"
+//            mavenBom "io.r2dbc:r2dbc-bom:Arabba-M8" //fixme version -> ext
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudReleaseTrain}"
 //            mavenBom "org.springframework.data:spring-data-releasetrain:${springDataReleaseTrain}"
         }
         dependencies {
@@ -139,7 +139,9 @@ subprojects {
                 new File(project.projectDir, "Dockerfile").text = """
 FROM openjdk:8-jre-alpine
 
-LABEL maintainer="Filip Malczak (filip.malczak@gmail.com)"
+LABEL maintainer="Filip Malczak (filip.malczak@gmail.com),version=${project.version}"
+
+EXPOSE 8080
 
 WORKDIR /var/opt/${project.name}
 

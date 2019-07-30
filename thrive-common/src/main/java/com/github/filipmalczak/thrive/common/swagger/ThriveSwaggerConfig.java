@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.example.items;
+package com.github.filipmalczak.thrive.common.swagger;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,37 +15,55 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 @Configuration
 @EnableSwagger2WebFlux
-public class SwaggerConfig {
+public class ThriveSwaggerConfig {
+    public static final Predicate<String> PUBLIC_API_PATHS = PathSelectors.regex("/api[/]?.*");
+    public static final Predicate<String> INTERNAL_API_PATHS = PathSelectors.regex("/internal[/]?.*");
+    public static final Predicate<String> TECHNICAL_API_PATHS = PUBLIC_API_PATHS.or(INTERNAL_API_PATHS).negate();
+
     @Autowired
     private TypeResolver resolver;
 
     @Bean
-    public Docket api() {
+    public Docket publicApi() {
         return handleWebflux(
             new Docket(DocumentationType.SWAGGER_2)
                 .groupName("api")
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api[/]?.*"))
+                .paths(PUBLIC_API_PATHS)
                 .build()
                 .useDefaultResponseMessages(false)
         );
     }
 
     @Bean
-    public Docket internals() {
+    public Docket internalApi() {
         return handleWebflux(
             new Docket(DocumentationType.SWAGGER_2)
-                .groupName("internals")
+                .groupName("internal")
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api[/]?.*").negate())
+                .paths(INTERNAL_API_PATHS)
+                .build()
+                .useDefaultResponseMessages(false)
+        );
+    }
+
+    @Bean
+    public Docket technical() {
+        return handleWebflux(
+            new Docket(DocumentationType.SWAGGER_2)
+                .groupName("technical")
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(TECHNICAL_API_PATHS)
                 .build()
                 .useDefaultResponseMessages(false)
         );

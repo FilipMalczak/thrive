@@ -18,15 +18,17 @@ chmod +x $TEST_WORKSPACE/wait-for-dep.sh
 
 export ROOT_PROJECT=$ROOT_DIR
 
-FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml -f $HERE/docker-compose-stats.yml"
+FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
 
 docker-compose $FILES up --build thrive-dependencies
-docker-compose $FILES up --build stats-dependencies
 
-$ROOT_DIR/gradlew :test-items:bootRun &
+SERVER_PORT=8085 $ROOT_DIR/gradlew :test-items:bootRun &
 ITEMS_PID=$!
 
-$TEST_WORKSPACE/wait-for-dep.sh localhost:8085
+SERVER_PORT=8086 $ROOT_DIR/gradlew :test-stats:bootRun &
+STATS_PID=$!
+
+$TEST_WORKSPACE/wait-for-dep.sh localhost:8085 localhost:8086
 
 set +e
 python $HERE/items_suite.py
@@ -39,6 +41,7 @@ if [ "$#" -gt 0 ]; then
 fi
 
 kill $ITEMS_PID
+kill $STATS_PID
 docker-compose $FILES rm -sf
 docker volume prune -f
 rm -rf $TEST_WORKSPACE

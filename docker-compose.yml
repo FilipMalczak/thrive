@@ -39,3 +39,9 @@ services:
     build: ./thrive-gateway
     ports:
       - "8080:8080"
+
+  items:
+    build: ./test-items
+
+  stats:
+    build: ./test-stats

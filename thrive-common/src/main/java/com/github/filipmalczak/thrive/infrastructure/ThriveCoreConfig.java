@@ -13,35 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.env.Environment;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import javax.annotation.PostConstruct;
 
 import static com.github.filipmalczak.thrive.infrastructure.observing.Constants.*;
 
 @Configuration
-@EnableConfigurationProperties
-@EnableDiscoveryClient
-@PropertySource("classpath:/META-INF/build-info.properties")
-@PropertySource("classpath:/discovery.properties")
 @Slf4j
-public class ThriveAutoconfigure {
+@Order(Integer.MAX_VALUE-5)
+public class ThriveCoreConfig {
     //todo handle all thrive-related props and their default, its getting messy
     @Value("${thrive.app-name:${build.artifact:Unknown Thrive app}}")
     private String appName;
-
-    @Autowired
-    private Environment environment;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -51,24 +36,24 @@ public class ThriveAutoconfigure {
         return new Autowirer(beanFactory);
     }
 
-    @PostConstruct
-    void init(){
-        log.info(environment.getProperty("build.timestamp"));
-        log.info(environment.getProperty("build.time"));
-    }
-
     @ConditionalOnMissingBean
     @Bean
-    public WebClient webClient(){
+//    @LoadBalanced
+    public WebClient.Builder webClientBuilder(){
         return WebClient.builder()
-            .defaultHeader("X-Clacks-Overhead", "GNU Terry Pratchett")
-            .build();
+            .defaultHeader("X-Clacks-Overhead", "GNU Terry Pratchett");
+    }
+
+    @Bean
+    @SimpleWebClient
+    public WebClient simpleWebClient(WebClient.Builder builder){
+        return builder.build();
     }
 
     @ConditionalOnMissingBean
     @Bean
-    public ApiDetector apiDetector(WebClient webClient, DiscoveryClient discoveryClient){
-        return new ApiDetector(webClient, discoveryClient);
+    public ApiDetector apiDetector(){
+        return autowirer().autowired(ApiDetector.class);
     }
 
     //fixme these should be somehow conditional; probably should be disable-able with props

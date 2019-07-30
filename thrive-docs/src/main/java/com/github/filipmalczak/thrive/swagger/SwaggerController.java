@@ -1,8 +1,8 @@
 package com.github.filipmalczak.thrive.swagger;
 
+import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
 import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.ThriveInstance;
 import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
-import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
