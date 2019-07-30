@@ -8,7 +8,7 @@ from time import sleep
 
 randstr = lambda: str(uuid4())
 
-WAIT_TIME = 2 # in seconds
+WAIT_TIME = 10 # in seconds
 
 def is_circleci():
     try:

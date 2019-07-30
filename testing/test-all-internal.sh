@@ -24,6 +24,16 @@ python $HERE/items_suite.py
 
 EXIT=$?
 
+if [ $EXIT -gt 0 ]; then
+    docker-compose $FILES logs items
+    echo "***************************************************************"
+    echo ""
+    echo ""
+    echo ""
+    echo "***************************************************************"
+    docker-compose $FILES logs stats
+fi
+
 #todo document this
 if [ "$#" -gt 0 ]; then
     read  -rsn1 -p "Press any key to continue";
