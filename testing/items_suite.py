@@ -3,8 +3,22 @@ from json import *
 from random import randint
 from requests import *
 from uuid import uuid4
+from os import environ
+from time import sleep
 
 randstr = lambda: str(uuid4())
+
+WAIT_TIME = 2 # in seconds
+
+def is_circleci():
+    try:
+        environ["CIRCLECI"]
+        return True
+    except:
+        return False
+
+#todo document this
+allow_kafka_to_work = (lambda: sleep(WAIT_TIME)) if is_circleci() else (lambda: sleep(0))
 
 #todo organize into given/when/then
 class ItemsTests(unittest.TestCase):
@@ -30,6 +44,7 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         })
+        allow_kafka_to_work()
         resp = get("http://localhost:8080/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         new_stats = resp.json()
@@ -58,6 +73,7 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         })
+        allow_kafka_to_work()
         resp = get("http://localhost:8080/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         new_stats = resp.json()
