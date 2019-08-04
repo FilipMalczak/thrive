@@ -19,6 +19,7 @@ public class StatsController {
     }
 
     //fixme should be internal
+    //fixme should yield 204, not 200
     @PostMapping("/api/v1/items/size")
     public void updateStatsWebhook(@RequestBody long size){
         log.info("Pre update "+stats);

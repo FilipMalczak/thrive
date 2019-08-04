@@ -40,7 +40,7 @@ public class ItemsController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Item with ID="+item.getId()+" already exists!");
         }
         log.info("WebClient: {}", webClient);
-        final String uri = "http://"+ getBaseUrl("test-stats")+"/api/v1/items/size";
+        final String uri = "http://test-stats/api/v1/items/size";
         log.info("URI: {}", uri);
         return Mono.just(item)
             .map(i -> {
@@ -59,6 +59,7 @@ public class ItemsController {
                         log.info("Headers "+r.headers().asHttpHeaders());;
                         if (r.statusCode().is2xxSuccessful())
                             return r;
+                        //todo sanitize exception
                         throw new RuntimeException("Wrong status code! "+r.statusCode());
                     })
             )
@@ -67,13 +68,13 @@ public class ItemsController {
             .log("returned");
     }
 
-    private String getBaseUrl(String service){
-        List<ServiceInstance> instances = discoveryClient.getInstances(service);
-        if (instances.isEmpty())
-            throw new RuntimeException("No instance of "+service);
-        ServiceInstance instance = instances.get(new Random().nextInt(instances.size()));
-        return instance.getHost()+":"+instance.getPort();
-    }
+//    private String getBaseUrl(String service){
+//        List<ServiceInstance> instances = discoveryClient.getInstances(service);
+//        if (instances.isEmpty())
+//            throw new RuntimeException("No instance of "+service);
+//        ServiceInstance instance = instances.get(new Random().nextInt(instances.size()));
+//        return instance.getHost()+":"+instance.getPort();
+//    }
 
     @GetMapping("/api/v1/items/{id}")
     public Item getItem(@PathVariable String id){

@@ -5,6 +5,7 @@ import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.ServerList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.x.discovery.ServiceDiscovery;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerExchangeFilterFunction;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance;
@@ -26,15 +27,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 //    ReactiveLoadBalancerAutoConfiguration.class,
     ThriveSwaggerConfig.class
 })
+@AutoConfigureAfter(ZookeeperRibbonClientConfiguration.class)
 @Order(Integer.MAX_VALUE-4)
 public class ThriveConfig {
 
 //    @ConditionalOnMissingBean
     @Bean
     @Primary
-    public WebClient webClient(WebClient.Builder builder){
-//    public WebClient webClient(WebClient.Builder builder, LoadBalancerExchangeFilterFunction lbFunction){
-        return builder.build();
+    public WebClient webClient(WebClient.Builder builder, LoadBalancerExchangeFilterFunction lbFunction){
+        WebClient webClient = builder.filter(lbFunction).build();
+        return webClient;
     }
 
 //    @ConditionalOnMissingBean

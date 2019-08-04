@@ -79,10 +79,14 @@ issue section.
 - add docker image publishing (push to dockerhub) from CI (at `master` and `dev` branches; make sure that test services aren't published)
 - publish BOM to some Maven repo (probably JFrog)
 - create Gradle plugin for generating `docker-compose.yml` files with curated image lists
+- add support for scaling (many instances of the same service should be reouted with Ribbon in gateway and appear only once in Swagger)
+- add support for preconfigured MongoDB
+- add support for preconfigured PostgreSQL
 
 ### Low prio
 
 - figure out what to do with YML files in repository root
+- add support for internal/technical APIs
 - expand tests
 - extend `thrive` configurability (ports, enabling/disabling admin and swagger ui, etc), maybe provide `docker-compose-ui.yml`
 - extend e2e tests to check configurability (see previous point)
