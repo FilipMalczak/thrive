@@ -40,8 +40,8 @@ services:
     ports:
       - "8080:8080"
 
-  items:
-    build: ./test-items
+#  items:
+#    build: ./test-items
 
   stats:
     build: ./test-stats

@@ -1,5 +1,6 @@
 import java.time.LocalDateTime
 import java.time.ZoneId
+import groovy.xml.*
 
 buildscript {
     ext {
@@ -31,10 +32,10 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'groovy'
-    apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
+
+    apply plugin: 'groovy'
     apply plugin: "com.gorylenko.gradle-git-properties"
 
     group = 'com.github.filipmalczak'
@@ -45,6 +46,7 @@ subprojects {
     targetCompatibility = 1.8
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
         maven { url 'https://repo.spring.io/milestone' }
@@ -53,48 +55,13 @@ subprojects {
     //todo normalize dependency notation "group:project[:version" against group: group, name: project[, version: version]
     //I think that single-string is better
 
-    dependencyManagement {
-        imports {
-            //todo check whether order of BOMs matter
-            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudReleaseTrain}"
-//            mavenBom "io.r2dbc:r2dbc-bom:Arabba-M8" //fixme version -> ext
-//            mavenBom "org.springframework.data:spring-data-releasetrain:${springDataReleaseTrain}"
-        }
-        dependencies {
-            dependency group: 'de.codecentric', name: "spring-boot-admin-starter-client", version: springBootAdminVersion
-            dependency group: 'de.codecentric', name: "spring-boot-admin-starter-server", version: springBootAdminVersion
-
-            dependency group: 'ma.glasnost.orika', name: 'orika-core', version: '1.5.2'
-
-            dependency 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-            dependency group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.23.0'
-            dependency 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-
-            dependency group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
-            dependency 'org.junit.vintage:junit-vintage-engine:5.3.1' //required for Spock
-            dependency group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.3.1'
-
-            dependency "com.github.sbrannen:spring-test-junit5:1.2.0"
-
-            dependency 'org.projectlombok:lombok:1.18.2'
-            
-            dependency 'com.kstruct:gethostname4j:0.0.2'
-
-            dependency 'io.springfox:springfox-swagger2:3.0.0-SNAPSHOT'
-            dependency 'io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT'
-            dependency 'io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT'
-
-            dependency "io.projectreactor.kafka:reactor-kafka:1.1.0.RELEASE"
-
-            dependency "org.springframework.cloud:spring-cloud-starter-gateway:2.1.1.RELEASE"
-            dependency "org.apache.zookeeper:zookeeper:3.4.12"
-
-            dependency('org.springframework.cloud:spring-cloud-starter-zookeeper-all:2.1.1.RELEASE')
-            dependency group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.6'
-            dependency group: 'org.springframework.boot.experimental', name: 'spring-boot-starter-data-r2dbc', version: '0.1.0.M1'
-            dependency group: 'org.springframework.boot.experimental', name: 'spring-boot-actuator-autoconfigure-r2dbc', version: '0.1.0.M1'
-            dependency group: 'io.r2dbc', name: 'r2dbc-postgresql', version: '0.8.0.M8'
+    if (project.name != "thrive-bom") {
+        project.tasks["build"].dependsOn(":thrive-bom:publishToMavenLocal")
+        dependencyManagement {
+            imports {
+                //fixme versioning is weird; maybe base on ext?
+                mavenBom "com.github.filipmalczak:thrive-bom:"+project.version
+            }
         }
     }
 

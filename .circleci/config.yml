@@ -14,3 +14,10 @@ jobs:
       - run: ./testing/test-items-external.sh
       - run: ./testing/test-stats-external.sh
       - run: ./testing/test-all-external.sh
+      - run: ./gradlew :thrive-bom:handlePublications
+
+workflows:
+  ci:
+    jobs:
+      - build:
+          context: JFrog
