@@ -17,6 +17,7 @@ jobs:
       - run: ./gradlew :thrive-bom:handlePublications
 
 workflows:
+  version: 2
   ci:
     jobs:
       - build:
