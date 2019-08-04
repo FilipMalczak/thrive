@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.kafka;
+package com.github.filipmalczak.thrive.core.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.github.filipmalczak.thrive.infrastructure.kafka.JsonSupport.*;
+import static com.github.filipmalczak.thrive.core.kafka.JsonSupport.*;
 
 @RequiredArgsConstructor
 @Builder

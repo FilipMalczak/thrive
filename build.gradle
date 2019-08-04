@@ -55,9 +55,10 @@ subprojects {
 
     dependencyManagement {
         imports {
+            //todo check whether order of BOMs matter
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
-//            mavenBom "io.r2dbc:r2dbc-bom:Arabba-M8" //fixme version -> ext
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudReleaseTrain}"
+//            mavenBom "io.r2dbc:r2dbc-bom:Arabba-M8" //fixme version -> ext
 //            mavenBom "org.springframework.data:spring-data-releasetrain:${springDataReleaseTrain}"
         }
         dependencies {

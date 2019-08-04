@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.observing;
+package com.github.filipmalczak.thrive.core.observing;
 
 import lombok.*;
 import org.springframework.cloud.zookeeper.discovery.watcher.DependencyState;

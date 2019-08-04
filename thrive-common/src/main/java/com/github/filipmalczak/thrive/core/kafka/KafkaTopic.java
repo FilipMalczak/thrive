@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.kafka;
+package com.github.filipmalczak.thrive.core.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import reactor.util.function.Tuples;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.filipmalczak.thrive.infrastructure.kafka.JsonSupport.*;
+import static com.github.filipmalczak.thrive.core.kafka.JsonSupport.*;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor

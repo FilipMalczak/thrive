@@ -2,16 +2,15 @@ package com.github.filipmalczak.thrive.example.stats;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,6 +21,10 @@ public class ItemsController {
 
     @Autowired
     private WebClient webClient;
+
+    //todo used for poor mans LB, replace with ribbon
+    @Autowired
+    private DiscoveryClient discoveryClient;
 
     //fixme make read stack reactive
     @GetMapping("/api/v1/items")
@@ -37,7 +40,7 @@ public class ItemsController {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Item with ID="+item.getId()+" already exists!");
         }
         log.info("WebClient: {}", webClient);
-        final String uri = "http://test-stats/api/v1/items/size";
+        final String uri = "http://"+ getBaseUrl("test-stats")+"/api/v1/items/size";
         log.info("URI: {}", uri);
         return Mono.just(item)
             .map(i -> {
@@ -54,12 +57,22 @@ public class ItemsController {
                     .map(r -> {
                         log.info("Status "+r.rawStatusCode());
                         log.info("Headers "+r.headers().asHttpHeaders());;
-                        return r;
+                        if (r.statusCode().is2xxSuccessful())
+                            return r;
+                        throw new RuntimeException("Wrong status code! "+r.statusCode());
                     })
             )
             .log("postwebhook")
             .thenReturn(item.getId())
             .log("returned");
+    }
+
+    private String getBaseUrl(String service){
+        List<ServiceInstance> instances = discoveryClient.getInstances(service);
+        if (instances.isEmpty())
+            throw new RuntimeException("No instance of "+service);
+        ServiceInstance instance = instances.get(new Random().nextInt(instances.size()));
+        return instance.getHost()+":"+instance.getPort();
     }
 
     @GetMapping("/api/v1/items/{id}")

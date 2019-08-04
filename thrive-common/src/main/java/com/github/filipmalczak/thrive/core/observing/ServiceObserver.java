@@ -1,11 +1,11 @@
-package com.github.filipmalczak.thrive.infrastructure.observing;
+package com.github.filipmalczak.thrive.core.observing;
 
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTopic;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import reactor.core.publisher.Flux;
 
-import static com.github.filipmalczak.thrive.infrastructure.observing.Constants.KAFKA_TOPIC_BEAN;
+import static com.github.filipmalczak.thrive.core.observing.Constants.KAFKA_TOPIC_BEAN;
 
 public class ServiceObserver {
 

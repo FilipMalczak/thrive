@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.kafka;
+package com.github.filipmalczak.thrive.core.kafka;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

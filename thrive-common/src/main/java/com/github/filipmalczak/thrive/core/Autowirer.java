@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure;
+package com.github.filipmalczak.thrive.core;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

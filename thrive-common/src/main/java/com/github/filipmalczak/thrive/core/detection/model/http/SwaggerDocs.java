@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.detection.model.http;
+package com.github.filipmalczak.thrive.core.detection.model.http;
 
 import lombok.Data;
 

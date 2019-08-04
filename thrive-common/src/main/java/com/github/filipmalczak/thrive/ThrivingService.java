@@ -1,6 +1,9 @@
 package com.github.filipmalczak.thrive;
 
 import com.github.filipmalczak.thrive.common.service.ThriveConfig;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperRibbonClientConfiguration;
+import org.springframework.cloud.zookeeper.discovery.dependency.DependencyRibbonAutoConfiguration;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
@@ -22,7 +25,6 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @ThriveService
-@PropertySource(value = "classpath:/META-INF/capabilities.properties", ignoreResourceNotFound = true)
-@Import(ThriveConfig.class)
+@Import({ThriveConfig.class, })
 public @interface ThrivingService {
 }

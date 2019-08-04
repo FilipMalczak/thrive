@@ -1,9 +1,9 @@
 package com.github.filipmalczak.thrive.gateway;
 
 import com.github.filipmalczak.thrive.ThriveService;
-import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.Endpoint;
-import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
+import com.github.filipmalczak.thrive.core.detection.ApiDetector;
+import com.github.filipmalczak.thrive.core.detection.model.dto.Endpoint;
+import com.github.filipmalczak.thrive.core.observing.ServiceObserver;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

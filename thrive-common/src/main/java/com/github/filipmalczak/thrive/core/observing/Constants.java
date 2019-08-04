@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.observing;
+package com.github.filipmalczak.thrive.core.observing;
 
 public interface Constants {
     String KAFKA_TOPIC_BEAN = "infrastructureChangesTopic";

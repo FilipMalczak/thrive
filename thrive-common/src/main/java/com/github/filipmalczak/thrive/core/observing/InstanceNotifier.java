@@ -1,6 +1,6 @@
-package com.github.filipmalczak.thrive.infrastructure.observing;
+package com.github.filipmalczak.thrive.core.observing;
 
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTemplate;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,7 @@ import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryPropertie
 import org.springframework.cloud.zookeeper.discovery.watcher.DependencyState;
 import org.springframework.context.event.EventListener;
 
-import static com.github.filipmalczak.thrive.infrastructure.observing.Constants.KAFKA_TOPIC_NAME;
+import static com.github.filipmalczak.thrive.core.observing.Constants.KAFKA_TOPIC_NAME;
 
 @Slf4j
 //todo InfrastructureNotifier?

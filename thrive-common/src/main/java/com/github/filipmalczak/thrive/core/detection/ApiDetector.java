@@ -1,9 +1,9 @@
-package com.github.filipmalczak.thrive.infrastructure.detection;
+package com.github.filipmalczak.thrive.core.detection;
 
-import com.github.filipmalczak.thrive.infrastructure.SimpleWebClient;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.Endpoint;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.dto.ThriveInstance;
-import com.github.filipmalczak.thrive.infrastructure.detection.model.http.SwaggerDocs;
+import com.github.filipmalczak.thrive.core.SimpleWebClient;
+import com.github.filipmalczak.thrive.core.detection.model.dto.Endpoint;
+import com.github.filipmalczak.thrive.core.detection.model.dto.ThriveInstance;
+import com.github.filipmalczak.thrive.core.detection.model.http.SwaggerDocs;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

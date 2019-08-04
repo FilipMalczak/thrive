@@ -1,10 +1,10 @@
-package com.github.filipmalczak.thrive.infrastructure;
+package com.github.filipmalczak.thrive.core;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.lang.annotation.*;
 
-import static com.github.filipmalczak.thrive.infrastructure.SimpleWebClient.SIMPLE_WEB_CLIENT_NAME;
+import static com.github.filipmalczak.thrive.core.SimpleWebClient.SIMPLE_WEB_CLIENT_NAME;
 
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

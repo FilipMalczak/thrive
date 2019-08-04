@@ -1,13 +1,13 @@
-package com.github.filipmalczak.thrive.infrastructure;
+package com.github.filipmalczak.thrive.core;
 
-import com.github.filipmalczak.thrive.infrastructure.detection.ApiDetector;
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTemplate;
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTemplateFactory;
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTopic;
-import com.github.filipmalczak.thrive.infrastructure.kafka.KafkaTopicFactory;
-import com.github.filipmalczak.thrive.infrastructure.observing.InstanceNotifier;
-import com.github.filipmalczak.thrive.infrastructure.observing.NewInstanceEvent;
-import com.github.filipmalczak.thrive.infrastructure.observing.ServiceObserver;
+import com.github.filipmalczak.thrive.core.detection.ApiDetector;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTemplate;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTemplateFactory;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTopic;
+import com.github.filipmalczak.thrive.core.kafka.KafkaTopicFactory;
+import com.github.filipmalczak.thrive.core.observing.InstanceNotifier;
+import com.github.filipmalczak.thrive.core.observing.NewInstanceEvent;
+import com.github.filipmalczak.thrive.core.observing.ServiceObserver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,13 +15,21 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.github.filipmalczak.thrive.infrastructure.observing.Constants.*;
+import static com.github.filipmalczak.thrive.core.observing.Constants.*;
 
 @Configuration
 @Slf4j
+@PropertySource({
+    "classpath:/git.properties",
+    "classpath:/META-INF/build-info.properties",
+    "classpath:/discovery.properties",
+    "classpath:/thrive-defaults.properties",
+    "classpath:/spring-defaults.properties"
+})
 @Order(Integer.MAX_VALUE-5)
 public class ThriveCoreConfig {
     //todo handle all thrive-related props and their default, its getting messy

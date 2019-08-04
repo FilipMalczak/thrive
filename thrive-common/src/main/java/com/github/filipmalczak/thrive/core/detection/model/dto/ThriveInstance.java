@@ -1,4 +1,4 @@
-package com.github.filipmalczak.thrive.infrastructure.detection.model.dto;
+package com.github.filipmalczak.thrive.core.detection.model.dto;
 
 import lombok.Value;
 import lombok.experimental.Accessors;
