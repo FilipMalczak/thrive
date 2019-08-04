@@ -20,8 +20,7 @@ export ROOT_PROJECT=$ROOT_DIR
 
 FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml -f $HERE/docker-compose-stats.yml"
 
-docker-compose $FILES up --build thrive-dependencies
-docker-compose $FILES up --build stats-dependencies
+docker-compose $FILES up --build thrive-dependencies stats-dependencies
 
 $ROOT_DIR/gradlew :test-items:bootRun &
 ITEMS_PID=$!
@@ -39,8 +38,8 @@ if [ "$#" -gt 0 ]; then
 fi
 
 kill $ITEMS_PID
-docker-compose $FILES rm -sf
-docker volume prune -f
+docker-compose $FILES rm -sf stats
+
 rm -rf $TEST_WORKSPACE
 
 exit $EXIT

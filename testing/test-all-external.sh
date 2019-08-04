@@ -42,8 +42,7 @@ fi
 
 kill $ITEMS_PID
 kill $STATS_PID
-docker-compose $FILES rm -sf
-docker volume prune -f
+
 rm -rf $TEST_WORKSPACE
 
 exit $EXIT

@@ -7,10 +7,9 @@ plugins {
     id 'com.jfrog.artifactory' version '4.9.8'
 }
 
-//version = "0.2.0"
-
 ext {
     isSnapshot = project.version.endsWith("-SNAPSHOT")
+    println "thrive-bom version: ${project.version}; isSnapshot: ${isSnapshot}"
 }
 
 dependencyManagement {
