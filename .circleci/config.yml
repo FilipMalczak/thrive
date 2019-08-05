@@ -95,12 +95,6 @@ jobs:
       # restore cached dependencies? or at least gradle wrapper?
       - checkout
       - run: ./gradlew clean build
-      - persist_to_workspace:
-          root: "."
-          paths:
-            - "*/build"
-            - ".circleci"
-            - "testing"
 
   build-docker:
     docker:
@@ -108,8 +102,6 @@ jobs:
     steps:
       - setup_remote_docker
 #          docker_layer_caching: true
-      - attach_to_workspace:
-          at: "."
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
 
@@ -117,8 +109,6 @@ jobs:
     docker:
       - image: circleci/python:3.7.4
     steps:
-      - attach_to_workspace:
-          at: "."
       - with-compose-project:
           project-name: all-internal
           stats: true
