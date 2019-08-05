@@ -108,11 +108,11 @@ subprojects {
                 new File(project.projectDir, "Dockerfile").text = """
 FROM openjdk:8-jre-alpine
 
-LABEL maintainer="Filip Malczak (filip.malczak@gmail.com),version=${project.version}"
-
 EXPOSE 8080
 
 WORKDIR /var/opt/${project.name}
+
+LABEL maintainer="Filip Malczak (filip.malczak@gmail.com),version=${project.version}"
 
 COPY ./build/libs/${project.name}-${project.version}-boot.jar ./${project.name}-${project.version}-boot.jar
 

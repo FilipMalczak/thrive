@@ -13,9 +13,11 @@ python -m pip install -r $HERE/requirements.txt
 
 export ROOT_PROJECT=$ROOT_DIR
 
-FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml -f $HERE/docker-compose-stats.yml"
+COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml"
+FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
-docker-compose $FILES up --build thrive-dependencies items-dependencies stats-dependencies
+docker-compose $FILES up thrive-dependencies
+docker-compose $FILES up --build items-dependencies stats-dependencies
 
 set +e
 python $HERE/items_suite.py

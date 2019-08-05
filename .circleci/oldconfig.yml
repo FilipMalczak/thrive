@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+
+    steps:
+      - checkout
+      - run: ./gradlew clean build
+      - run: ./.circleci/prepare_docker_build.sh
+      - run: ./.circleci/docker_build.sh
+      - run: ./testing/setup.sh
+      - run: ./testing/test-all-internal.sh
+      - run: ./testing/test-items-external.sh
+      - run: ./testing/test-stats-external.sh
+      - run: ./testing/test-all-external.sh
+      - run: ./testing/teardown.sh
+      - run: ./gradlew :thrive-bom:handlePublications
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - build:
+          context: JFrog

@@ -1,26 +1,129 @@
-version: 2
-jobs:
-  build:
-    machine:
-      image: ubuntu-1604:201903-01
-      docker_layer_caching: true
+version: "2.1"
 
+commands:
+  install-test-dependencies:
     steps:
+      - run: python -m pip install -r ./testing/requirements.txt
+
+  start-compose-project:
+    parameters:
+      name:
+        type: string
+      items:
+        type: boolean
+        default: false
+      stats:
+        type: boolean
+        default: false
+    steps:
+      - run: docker-compose -f ./testing/docker-compose-thrive.yml -f ./testing/docker-compose-thrive-local.yml -n << parameters.name >> up thrive-dependencies
+      - when: 
+        condition: << parameters.items >>
+        steps:
+          - run: docker-compose -f ./testing/docker-compose-items.yml-n << parameters.name >> up items-dependencies
+      - when:
+          condition: << parameters.stats >>
+          steps:
+            - run: docker-compose -f ./testing/docker-compose-stats.yml-n << parameters.name >> up stats-dependencies
+
+  stop-compose-project:
+    parameters:
+      name:
+        type: string
+      steps:
+        - run: docker-compose -n << parameters.name >> rm -sf
+
+  with-compose-project:
+    parameters:
+      name:
+        type: string
+      items:
+        type: boolean
+        default: false
+      stats:
+        type: boolean
+        default: false
+      body:
+        type: steps
+      steps:
+        - start-compose-project:
+          name: << parameters.name >>
+          items: << parameters.items >>
+          stats: << parameters.stats >>
+        - steps: << parameters.body >>
+        - stop-compose-project:
+          name: << parameters.name >>
+          when: always
+
+  with-boot:
+    parameters:
+      project-name:
+        type: string
+      body:
+        type: steps
+      port:
+        type: integer
+        default: 8085
+    steps:
+      - run:
+        command: |
+          wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O ./wait-for-dep.sh
+          chmod +x ./wait-for-dep.sh
+      - run:
+        command: |
+          SERVER_PORT=<< parameters.port >> ./gradlew :<< parameters.project-name >>:bootRun &
+          echo "$!" > ./<< parameters.project-name >>.pid
+          ./wait-for-dep.sh localhost:<< parameters.port >>
+      - steps: << parameters.body >>
+      - run:
+        command: |
+          kill $(cat ./<< parameters.project-name >>.pid)
+          rm ./<< parameters.project-name >>.pid
+        when: always
+
+  init-test-env:
+    steps:
+      - setup_remote_docker
+      - install-test-dependencies
+
+jobs:
+  build-java:
+    docker:
+      - image: circleci/openjdk:8u181
+    steps:
+      # restore cached dependencies?
       - checkout
       - run: ./gradlew clean build
+
+  build-docker:
+    docker:
+      - image: circleci/openjdk:8u181
+    steps:
+      - setup_remote_docker
+#          docker_layer_caching: true
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
-      - run: ./testing/setup.sh
-      - run: ./testing/test-all-internal.sh
-      - run: ./testing/test-items-external.sh
-      - run: ./testing/test-stats-external.sh
-      - run: ./testing/test-all-external.sh
-      - run: ./testing/teardown.sh
-      - run: ./gradlew :thrive-bom:handlePublications
+
+  test-items-external:
+    docker:
+      - image: circleci/python:3.7.4
+    steps:
+      - with-test-env:
+        body:
+          - with-compose-project:
+            name: all-internal
+            stats: true
+            body:
+              - init-test-env
+              - with-boot:
+                name: test-items
+                body:
+                  - python ./testing/items_suite.py
 
 workflows:
   version: 2
-  ci:
+  main-workflow:
     jobs:
-      - build:
-          context: JFrog
+      - build-java
+      - build-docker
+      - test-items-external

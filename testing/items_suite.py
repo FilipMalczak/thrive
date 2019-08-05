@@ -18,6 +18,7 @@ def is_circleci():
         return False
 
 #todo document this
+#fixme or rather remove this
 allow_kafka_to_work = (lambda: sleep(WAIT_TIME)) if is_circleci() else (lambda: sleep(0))
 
 #todo organize into given/when/then
