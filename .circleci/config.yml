@@ -88,18 +88,13 @@ commands:
       - install-test-dependencies
 
 jobs:
-  build-java:
+  build:
     docker:
       - image: circleci/openjdk:8u181
     steps:
       # restore cached dependencies? or at least gradle wrapper?
       - checkout
       - run: ./gradlew clean build
-
-  build-docker:
-    docker:
-      - image: circleci/openjdk:8u181
-    steps:
       - setup_remote_docker
 #          docker_layer_caching: true
       - run: ./.circleci/prepare_docker_build.sh
@@ -123,10 +118,7 @@ workflows:
   version: 2
   main-workflow:
     jobs:
-      - build-java
-      - build-docker:
-          requires:
-            - build-java
+      - build
       - test-items-external:
           requires:
-            - build-docker
+            - build
