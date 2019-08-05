@@ -104,8 +104,9 @@ jobs:
     docker:
       - image: circleci/python:3.7.4
     steps:
+      - setup_remote_docker
       - with-compose-project:
-          project-name: all-internal
+          project-name: items-internal
           stats: true
           body:
             - init-test-env
