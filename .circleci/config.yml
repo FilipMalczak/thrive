@@ -6,80 +6,81 @@ commands:
       - run: python -m pip install -r ./testing/requirements.txt
 
   start-compose-project:
-    parameters:
-      name:
-        type: string
-      items:
-        type: boolean
-        default: false
-      stats:
-        type: boolean
-        default: false
-    steps:
-      - run: docker-compose -f ./testing/docker-compose-thrive.yml -f ./testing/docker-compose-thrive-local.yml -n << parameters.name >> up thrive-dependencies
-      - when: 
-        condition: << parameters.items >>
-        steps:
-          - run: docker-compose -f ./testing/docker-compose-items.yml-n << parameters.name >> up items-dependencies
-      - when:
-          condition: << parameters.stats >>
-          steps:
-            - run: docker-compose -f ./testing/docker-compose-stats.yml-n << parameters.name >> up stats-dependencies
+      parameters:
+        project-name:
+          type: string
+        items:
+          type: boolean
+          default: false
+        stats:
+          type: boolean
+          default: false
+      steps:
+        - run: docker-compose -f ./testing/docker-compose-thrive.yml -f ./testing/docker-compose-thrive-local.yml -n << parameters.project-name >> up thrive-dependencies
+        - when:
+            condition: << parameters.items >>
+            steps:
+              - run: docker-compose -f ./testing/docker-compose-items.yml-n << parameters.project-name >> up items-dependencies
+        - when:
+            condition: << parameters.stats >>
+            steps:
+              - run: docker-compose -f ./testing/docker-compose-stats.yml-n << parameters.project-name >> up stats-dependencies
 
   stop-compose-project:
-    parameters:
-      name:
-        type: string
+      parameters:
+        project-name:
+          type: string
       steps:
-        - run: docker-compose -n << parameters.name >> rm -sf
+        - run:
+            command: docker-compose -n << parameters.project-name >> rm -sf
+            when: always
 
   with-compose-project:
-    parameters:
-      name:
-        type: string
-      items:
-        type: boolean
-        default: false
-      stats:
-        type: boolean
-        default: false
-      body:
-        type: steps
+      parameters:
+        project-name:
+          type: string
+        items:
+          type: boolean
+          default: false
+        stats:
+          type: boolean
+          default: false
+        body:
+          type: steps
       steps:
         - start-compose-project:
-          name: << parameters.name >>
-          items: << parameters.items >>
-          stats: << parameters.stats >>
+            project-name: << parameters.project-name >>
+            items: << parameters.items >>
+            stats: << parameters.stats >>
         - steps: << parameters.body >>
         - stop-compose-project:
-          name: << parameters.name >>
-          when: always
+            project-name: << parameters.project-name >>
 
   with-boot:
-    parameters:
-      project-name:
-        type: string
-      body:
-        type: steps
-      port:
-        type: integer
-        default: 8085
-    steps:
-      - run:
-        command: |
-          wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O ./wait-for-dep.sh
-          chmod +x ./wait-for-dep.sh
-      - run:
-        command: |
-          SERVER_PORT=<< parameters.port >> ./gradlew :<< parameters.project-name >>:bootRun &
-          echo "$!" > ./<< parameters.project-name >>.pid
-          ./wait-for-dep.sh localhost:<< parameters.port >>
-      - steps: << parameters.body >>
-      - run:
-        command: |
-          kill $(cat ./<< parameters.project-name >>.pid)
-          rm ./<< parameters.project-name >>.pid
-        when: always
+      parameters:
+        project-name:
+          type: string
+        body:
+          type: steps
+        port:
+          type: integer
+          default: 8085
+      steps:
+        - run:
+            command: |
+              wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O ./wait-for-dep.sh
+              chmod +x ./wait-for-dep.sh
+        - run:
+            command: |
+              SERVER_PORT=<< parameters.port >> ./gradlew :<< parameters.project-name >>:bootRun &
+              echo "$!" > ./<< parameters.project-name >>.pid
+              ./wait-for-dep.sh localhost:<< parameters.port >>
+        - steps: << parameters.body >>
+        - run:
+            command: |
+              kill $(cat ./<< parameters.project-name >>.pid)
+              rm ./<< parameters.project-name >>.pid
+            when: always
 
   init-test-env:
     steps:
@@ -108,22 +109,24 @@ jobs:
     docker:
       - image: circleci/python:3.7.4
     steps:
-      - with-test-env:
-        body:
-          - with-compose-project:
-            name: all-internal
-            stats: true
-            body:
-              - init-test-env
-              - with-boot:
-                name: test-items
+      - with-compose-project:
+          project-name: all-internal
+          stats: true
+          body:
+            - init-test-env
+            - with-boot:
+                project-name: test-items
                 body:
-                  - python ./testing/items_suite.py
+                  - run: python ./testing/items_suite.py
 
 workflows:
   version: 2
   main-workflow:
     jobs:
       - build-java
-      - build-docker
-      - test-items-external
+      - build-docker:
+          requires:
+            - build-java
+      - test-items-external:
+          requires:
+            - build-docker
