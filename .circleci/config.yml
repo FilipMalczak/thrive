@@ -3,7 +3,7 @@ version: 2.1
 commands:
   install-test-dependencies:
     steps:
-      - run: python -m pip install -r ./testing/requirements.txt
+      - run: sudo pip install -r ./testing/requirements.txt
 
   start-compose-project:
       parameters:
