@@ -16,15 +16,15 @@ commands:
           type: boolean
           default: false
       steps:
-        - run: docker-compose -f ./testing/docker-compose-thrive.yml -f ./testing/docker-compose-thrive-local.yml -n << parameters.project-name >> up thrive-dependencies
+        - run: docker-compose -f ./testing/docker-compose-thrive.yml -f ./testing/docker-compose-thrive-local.yml -p << parameters.project-name >> up thrive-dependencies
         - when:
             condition: << parameters.items >>
             steps:
-              - run: docker-compose -f ./testing/docker-compose-items.yml-n << parameters.project-name >> up items-dependencies
+              - run: docker-compose -f ./testing/docker-compose-items.yml-p << parameters.project-name >> up items-dependencies
         - when:
             condition: << parameters.stats >>
             steps:
-              - run: docker-compose -f ./testing/docker-compose-stats.yml-n << parameters.project-name >> up stats-dependencies
+              - run: docker-compose -f ./testing/docker-compose-stats.yml-p << parameters.project-name >> up stats-dependencies
 
   stop-compose-project:
       parameters:
@@ -82,6 +82,11 @@ commands:
               rm ./<< parameters.project-name >>.pid
             when: always
 
+  init-test-env:
+    steps:
+      - setup_remote_docker
+      - install-test-dependencies
+
 jobs:
   build:
     docker:
@@ -95,12 +100,27 @@ jobs:
 #          docker_layer_caching: true
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
+
+  test-items-external:
+    docker:
+      - image: circleci/python:3.7.4
+    steps:
+      - setup_remote_docker
       - with-compose-project:
           project-name: items-internal
           stats: true
           body:
-            - install-test-dependencies
+            - init-test-env
             - with-boot:
                 project-name: test-items
                 body:
                   - run: python ./testing/items_suite.py
+
+workflows:
+  version: 2
+  main-workflow:
+    jobs:
+      - build
+      - test-items-external:
+          requires:
+            - build
