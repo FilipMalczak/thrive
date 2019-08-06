@@ -91,7 +91,6 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8u181
-      - image: circleci/python:3.7.4
     steps:
       # restore cached dependencies? or at least gradle wrapper?
       - checkout
@@ -105,6 +104,7 @@ jobs:
     docker:
       - image: circleci/python:3.7.4
     steps:
+      - checkout
       - setup_remote_docker
       - with-compose-project:
           project-name: items-internal
