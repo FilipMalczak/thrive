@@ -22,11 +22,11 @@ commands:
         - when:
             condition: << parameters.items >>
             steps:
-              - run: docker-compose -f ./testing/docker-compose-items.yml-p << parameters.project-name >> up items-dependencies
+              - run: docker-compose -f ./testing/docker-compose-items.yml -p << parameters.project-name >> up items-dependencies
         - when:
             condition: << parameters.stats >>
             steps:
-              - run: docker-compose -f ./testing/docker-compose-stats.yml-p << parameters.project-name >> up stats-dependencies
+              - run: docker-compose -f ./testing/docker-compose-stats.yml -p << parameters.project-name >> up stats-dependencies
 
   stop-compose-project:
       parameters:
