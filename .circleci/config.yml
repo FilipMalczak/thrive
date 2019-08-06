@@ -3,6 +3,7 @@ version: 2.1
 commands:
   install-test-dependencies:
     steps:
+      - run: sudo apt-get update
       - run: sudo apt-get install python3-pip
       - run: pip install -r ./testing/requirements.txt
 
