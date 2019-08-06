@@ -5,7 +5,7 @@ commands:
     steps:
       - run: sudo apt-get update
       - run: sudo apt-get install python3-pip
-      - run: pip install -r ./testing/requirements.txt
+      - run: pip3 install -r ./testing/requirements.txt
 
   start-compose-project:
       parameters:
@@ -105,4 +105,4 @@ jobs:
             - with-boot:
                 project-name: test-items
                 body:
-                  - run: python ./testing/items_suite.py
+                  - run: python3 ./testing/items_suite.py
