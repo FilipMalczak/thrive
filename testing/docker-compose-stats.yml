@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   stats:
-    build: ${ROOT_PROJECT}/test-stats
+    build: ../test-stats
 
   stats-dependencies:
     image: dadarek/wait-for-dependencies

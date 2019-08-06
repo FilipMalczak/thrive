@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   items:
-    build: ${ROOT_PROJECT}/test-items
+    build: ../test-items
 
   items-dependencies:
     image: dadarek/wait-for-dependencies

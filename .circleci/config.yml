@@ -103,8 +103,6 @@ jobs:
   test-items-external:
     docker:
       - image: circleci/python:3.7.4
-    environment:
-      ROOT_PROJECT: $CIRCLE_WORKING_DIRECTORY
     steps:
       - checkout
       - setup_remote_docker

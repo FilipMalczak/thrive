@@ -18,12 +18,12 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   spring-boot-admin:
-    build: ${ROOT_PROJECT}/thrive-admin
+    build: ../thrive-admin
     ports:
       - "1111:8080"
 
   docs:
-    build: ${ROOT_PROJECT}/thrive-docs
+    build: ../thrive-docs
     environment:
       # redundant, there is such a default, but writing it down so it won't get lost
       THRIVE_BASE_URL: localhost:8080
@@ -34,7 +34,7 @@ services:
       API_URL: /docs/v1/swagger
 
   gateway:
-    build: ${ROOT_PROJECT}/thrive-gateway
+    build: ../thrive-gateway
     ports:
       - "8080:8080"
 
