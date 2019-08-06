@@ -106,6 +106,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: export ROOT_PROJECT=".."
       - with-compose-project:
           project-name: items-internal
           stats: true
