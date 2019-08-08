@@ -1,15 +1,15 @@
 import java.time.LocalDateTime
 import java.time.ZoneId
-import groovy.xml.*
 
+//todo exploit gradle caching https://circleci.com/docs/2.0/language-java/
 buildscript {
     ext {
-        springCloudReleaseTrain = 'Greenwich.SR2' // relates to Spring Boot 2.1.x
-//        springDataReleaseTrain = 'Lovelace-RELEASE'
+        //fixme these should be somehow resolvable against BOM
         springBootVersion  = '2.1.6.RELEASE'
-        springBootAdminVersion = springBootVersion.split("[.]").take(3).join(".")
+
+        thriveBomVersion   = "0.2.0-SNAPSHOT"
+
         gitInfoVersion     = '2.0.0'
-        lombokVersion      = "2.1"
     }
     repositories {
         mavenCentral()
@@ -21,7 +21,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gitInfoVersion}"
-        classpath 'com.google.guava:guava:20.0'
+        classpath 'com.google.guava:guava:20.0' //fixme wtf is this?
 
     }
 }
@@ -38,7 +38,7 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: "com.gorylenko.gradle-git-properties"
 
-    group = 'com.github.filipmalczak'
+    group = 'com.github.thrive-framework'
 
     version = "0.2.0-SNAPSHOT"
 
@@ -53,16 +53,10 @@ subprojects {
         maven { url 'https://repo.spring.io/milestone' }
     }
 
-    //todo normalize dependency notation "group:project[:version" against group: group, name: project[, version: version]
-    //I think that single-string is better
-
-    if (project.name != "thrive-bom") {
-        project.tasks["build"].dependsOn(":thrive-bom:publishToMavenLocal")
-        dependencyManagement {
-            imports {
-                //fixme versioning is weird; maybe base on ext?
-                mavenBom "com.github.filipmalczak:thrive-bom:"+project.version
-            }
+    dependencyManagement {
+        imports {
+            //fixme versioning is weird; maybe base on ext?
+            mavenBom "com.github.thrive-framework:thrive-bom:$thriveBomVersion"
         }
     }
 
