@@ -13,6 +13,7 @@ jobs:
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
 #      - run: ./testing/setup.sh
+      - run: ./testing/prepare-python.sh
       - run: ./testing/test-all-internal.sh
       - run: ./testing/test-items-external.sh
       - run: ./testing/test-stats-external.sh
