@@ -72,16 +72,15 @@ commands:
             command: |
               wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O ./wait-for-dep.sh
               chmod +x ./wait-for-dep.sh
-        - run:
-            command: |
-              SERVER_PORT=<< parameters.port >> ./gradlew :<< parameters.project-name >>:bootRun &
-              echo "$!" > ./<< parameters.project-name >>.pid
-              ./wait-for-dep.sh localhost:<< parameters.port >>
+        - run: SERVER_PORT=<< parameters.port >> ./gradlew :<< parameters.project-name >>:bootRun &
+        - run: echo "$!" > ./<< parameters.project-name >>.pid
+        - run: ./wait-for-dep.sh localhost:<< parameters.port >>
         - steps: << parameters.body >>
         - run:
-            command: |
-              kill $(cat ./<< parameters.project-name >>.pid)
-              rm ./<< parameters.project-name >>.pid
+            command: kill $(cat ./<< parameters.project-name >>.pid)
+            when: always
+        - run:
+            command: rm ./<< parameters.project-name >>.pid
             when: always
 
 jobs:
