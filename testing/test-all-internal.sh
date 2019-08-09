@@ -15,7 +15,29 @@ COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.y
 FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
 docker-compose $FILES up thrive-dependencies
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
+docker-compose ps
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
 docker-compose $FILES up --build items-dependencies stats-dependencies
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
+docker-compose ps
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
+docker-compose logs items
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
+docker-compose logs stats
+echo "---------------------------------------------------------"
+echo ""
+echo "---------------------------------------------------------"
 
 set +e
 python3 $HERE/items_suite.py
