@@ -22,6 +22,8 @@ FILES="$COMMON_FILES"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
+docker system prune -f
+
 docker-compose $COMPOSE_FLAGS up --build thrive-dependencies
 
 SERVER_PORT=8085 $ROOT_DIR/gradlew :test-items:bootRun &

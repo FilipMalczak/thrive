@@ -22,6 +22,8 @@ FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
+docker system prune -f
+
 docker-compose $COMPOSE_FLAGS up thrive-dependencies
 docker-compose $COMPOSE_FLAGS up --build stats-dependencies
 
