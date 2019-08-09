@@ -15,7 +15,7 @@ COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.y
 PROJECT="-p allinternal"
 FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
-docker-compose $PROJECT $FILES -up thrive-dependencies
+docker-compose $FILES $PROJECT -up thrive-dependencies
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
@@ -23,7 +23,7 @@ docker-compose $PROJECT ps
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose $PROJECT $FILES up --build items-dependencies stats-dependencies
+docker-compose $FILES $PROJECT up --build items-dependencies stats-dependencies
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
