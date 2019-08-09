@@ -12,29 +12,30 @@ $ROOT_DIR/gradlew build generateDockerfile
 export ROOT_PROJECT=$ROOT_DIR
 
 COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml"
+PROJECT="-p project-name"
 FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
-docker-compose $FILES up thrive-dependencies
+docker-compose $PROJECT $FILES -up thrive-dependencies
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose ps
+docker-compose $PROJECT ps
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose $FILES up --build items-dependencies stats-dependencies
+docker-compose $PROJECT $FILES up --build items-dependencies stats-dependencies
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose ps
+docker-compose $PROJECT ps
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose logs items
+docker-compose $PROJECT logs items
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
-docker-compose logs stats
+docker-compose $PROJECT logs stats
 echo "---------------------------------------------------------"
 echo ""
 echo "---------------------------------------------------------"
@@ -49,6 +50,6 @@ if [ "$#" -gt 0 ]; then
     read  -rsn1 -p "Press any key to continue";
 fi
 
-docker-compose $FILES rm -sf items stats
+docker-compose $PROJECT $FILES rm -sf
 
 exit $EXIT
