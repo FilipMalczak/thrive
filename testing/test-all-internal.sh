@@ -13,32 +13,12 @@ export ROOT_PROJECT=$ROOT_DIR
 
 COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml"
 PROJECT="-p allinternal"
-FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
+FILES="$COMMON_FILES"
 
-docker-compose $FILES $PROJECT up thrive-dependencies
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
-docker-compose $PROJECT ps
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
-docker-compose $FILES $PROJECT up --build items-dependencies stats-dependencies
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
-docker-compose $PROJECT ps
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
-docker-compose $PROJECT logs items
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
-docker-compose $PROJECT logs stats
-echo "---------------------------------------------------------"
-echo ""
-echo "---------------------------------------------------------"
+COMPOSE_FLAGS="$FILES $PROJECT"
+
+docker-compose $COMPOSE_FLAGS up thrive-dependencies
+docker-compose $COMPOSE_FLAGS up --build items-dependencies stats-dependencies
 
 set +e
 python3 $HERE/items_suite.py
@@ -50,6 +30,6 @@ if [ "$#" -gt 0 ]; then
     read  -rsn1 -p "Press any key to continue";
 fi
 
-docker-compose $PROJECT $FILES rm -sf
+docker-compose $COMPOSE_FLAGS rm -sf
 
 exit $EXIT

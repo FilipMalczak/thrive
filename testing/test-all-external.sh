@@ -17,8 +17,12 @@ chmod +x $TEST_WORKSPACE/wait-for-dep.sh
 export ROOT_PROJECT=$ROOT_DIR
 
 FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
+PROJECT="-p allexternal"
+FILES="$COMMON_FILES"
 
-docker-compose $FILES up --build thrive-dependencies
+COMPOSE_FLAGS="$FILES $PROJECT"
+
+docker-compose $COMPOSE_FLAGS up --build thrive-dependencies
 
 SERVER_PORT=8085 $ROOT_DIR/gradlew :test-items:bootRun &
 ITEMS_PID=$!
@@ -40,6 +44,7 @@ fi
 
 kill $ITEMS_PID
 kill $STATS_PID
+docker-compose $COMPOSE_FLAGS rm -sf
 
 rm -rf $TEST_WORKSPACE
 
