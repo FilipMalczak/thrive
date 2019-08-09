@@ -11,9 +11,9 @@ $ROOT_DIR/gradlew build generateDockerfile
 
 export ROOT_PROJECT=$ROOT_DIR
 
-COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml"
+COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
 PROJECT="-p allinternal"
-FILES="$COMMON_FILES"
+FILES="$COMMON_FILES -f $HERE/docker-compose-items.yml -f $HERE/docker-compose-stats.yml"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
