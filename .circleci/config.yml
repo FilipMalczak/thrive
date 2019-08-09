@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run: ./gradlew clean build
-      - setup_remote_docker
+#      - setup_remote_docker
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
 #      - run: ./testing/setup.sh
