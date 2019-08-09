@@ -4,6 +4,8 @@
 
 set -ex
 
+cat /etc/hosts
+
 HERE="$(realpath $(dirname "$0"))"
 ROOT_DIR=$HERE/..
 
