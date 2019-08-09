@@ -12,7 +12,7 @@ $ROOT_DIR/gradlew build generateDockerfile
 export ROOT_PROJECT=$ROOT_DIR
 
 COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-items.yml"
-PROJECT="-p project-name"
+PROJECT="-p allinternal"
 FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
 docker-compose $PROJECT $FILES -up thrive-dependencies
