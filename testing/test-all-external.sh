@@ -22,7 +22,7 @@ FILES="$COMMON_FILES"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
-docker-compose $COMPOSE_FLAGS up --build thrive-dependencies
+docker-compose $COMPOSE_FLAGS up thrive-dependencies
 
 SERVER_PORT=8085 $ROOT_DIR/gradlew :test-items:bootRun &
 ITEMS_PID=$!
