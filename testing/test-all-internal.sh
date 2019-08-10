@@ -31,6 +31,6 @@ if [ "$#" -gt 0 ]; then
 fi
 
 docker-compose $COMPOSE_FLAGS rm -sf
-sleep 5
+
 
 exit $EXIT

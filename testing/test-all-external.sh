@@ -45,7 +45,7 @@ fi
 kill $ITEMS_PID
 kill $STATS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
-sleep 5
+
 
 rm -rf $TEST_WORKSPACE
 

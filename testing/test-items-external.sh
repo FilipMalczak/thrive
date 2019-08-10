@@ -41,9 +41,9 @@ if [ "$#" -gt 0 ]; then
 fi
 
 kill $ITEMS_PID
-docker-compose $COMPOSE_FLAGS rm -sf stats
+docker-compose $COMPOSE_FLAGS rm -sf
 
 rm -rf $TEST_WORKSPACE
-sleep 5
+
 
 exit $EXIT
