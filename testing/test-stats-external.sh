@@ -33,7 +33,7 @@ STATS_PID=$!
 $TEST_WORKSPACE/wait-for-dep.sh localhost:8085
 
 set +e
-python3 $HERE/items_suite.py
+python $HERE/items_suite.py
 
 EXIT=$?
 

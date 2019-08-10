@@ -23,7 +23,7 @@ docker-compose $COMPOSE_FLAGS up thrive-dependencies
 docker-compose $COMPOSE_FLAGS up --build items-dependencies stats-dependencies
 
 set +e
-python3 $HERE/items_suite.py
+python $HERE/items_suite.py
 
 EXIT=$?
 
