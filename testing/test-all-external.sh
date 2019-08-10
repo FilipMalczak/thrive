@@ -16,7 +16,7 @@ chmod +x $TEST_WORKSPACE/wait-for-dep.sh
 
 export ROOT_PROJECT=$ROOT_DIR
 
-FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
+COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
 PROJECT="-p all-external"
 FILES="$COMMON_FILES"
 
