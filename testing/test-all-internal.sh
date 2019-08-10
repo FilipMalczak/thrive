@@ -4,8 +4,6 @@
 
 set -ex
 
-cat /etc/hosts
-
 HERE="$(realpath $(dirname "$0"))"
 ROOT_DIR=$HERE/..
 
@@ -13,7 +11,7 @@ $ROOT_DIR/gradlew build generateDockerfile
 
 export ROOT_PROJECT=$ROOT_DIR
 
-COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml"
+COMMON_FILES="-f $HERE/docker-compose-thrive.yml -f $HERE/docker-compose-thrive-local.yml -f $HERE/docker-compose-test.yml"
 PROJECT="-p allinternal"
 FILES="$COMMON_FILES -f $HERE/docker-compose-items.yml -f $HERE/docker-compose-stats.yml"
 
@@ -25,7 +23,8 @@ docker-compose $COMPOSE_FLAGS up thrive-dependencies
 docker-compose $COMPOSE_FLAGS up --build items-dependencies stats-dependencies
 
 set +e
-python3 $HERE/items_suite.py
+#python3 $HERE/items_suite.py
+docker-compose $COMPOSE_FLAGS up --build --exit-code-from tests tests
 
 EXIT=$?
 

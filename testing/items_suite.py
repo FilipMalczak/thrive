@@ -19,7 +19,7 @@ def is_circleci():
 
 is_circleci = is_circleci()
 
-host = environ["DOCKER_HOST"] if is_circleci else "localhost:8080"
+gateway_host = environ.get("GATEWAY_HOSTNAME", "localhost")+":8080"
 
 #todo document this
 #fixme or rather remove this
@@ -28,20 +28,20 @@ allow_kafka_to_work = (lambda: sleep(WAIT_TIME if is_circleci else 0))
 #todo organize into given/when/then
 class ItemsTests(unittest.TestCase):
     def test_creates_with_id(self):
-        resp = get("http://"+host+"/api/v1/items/size/statistics")
+        resp = get("http://" + gateway_host + "/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         previous_stats = resp.json()
         id = randstr()
         name = randstr()
         size = randint(0, 1000)
-        resp = post("http://"+host+"/api/v1/items", json={
+        resp = post("http://" + gateway_host + "/api/v1/items", json={
             "id": id,
             "name": name,
             "size": size
         })
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.text, id)
-        resp = get("http://"+host+"/api/v1/items/"+id)
+        resp = get("http://" + gateway_host + "/api/v1/items/" + id)
         self.assertEqual(resp.status_code, 200)
         json = resp.json()
         self.assertEqual(json, {
@@ -50,7 +50,7 @@ class ItemsTests(unittest.TestCase):
             "size": size
         })
         allow_kafka_to_work()
-        resp = get("http://"+host+"/api/v1/items/size/statistics")
+        resp = get("http://" + gateway_host + "/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         new_stats = resp.json()
         self.assertEqual(new_stats["total"], previous_stats["total"]+size)
@@ -58,19 +58,19 @@ class ItemsTests(unittest.TestCase):
 
 
     def test_creates_without_id(self):
-        resp = get("http://"+host+"/api/v1/items/size/statistics")
+        resp = get("http://" + gateway_host + "/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         previous_stats = resp.json()
         name = randstr()
         size = randint(0, 1000)
-        resp = post("http://"+host+"/api/v1/items", json={
+        resp = post("http://" + gateway_host + "/api/v1/items", json={
             "name": name,
             "size": size
         })
         self.assertEqual(resp.status_code, 200)
         self.assertNotEqual(resp.text, None)
         id = resp.text
-        resp = get("http://"+host+"/api/v1/items/"+id)
+        resp = get("http://" + gateway_host + "/api/v1/items/" + id)
         self.assertEqual(resp.status_code, 200)
         json = resp.json()
         self.assertEqual(json, {
@@ -79,7 +79,7 @@ class ItemsTests(unittest.TestCase):
             "size": size
         })
         allow_kafka_to_work()
-        resp = get("http://"+host+"/api/v1/items/size/statistics")
+        resp = get("http://" + gateway_host + "/api/v1/items/size/statistics")
         self.assertEqual(resp.status_code, 200)
         new_stats = resp.json()
         self.assertEqual(new_stats["total"], previous_stats["total"]+size)
@@ -94,7 +94,7 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         }
-        resp = post("http://"+host+"/api/v1/items", json=item1)
+        resp = post("http://" + gateway_host + "/api/v1/items", json=item1)
         self.assertEqual(resp.status_code, 200)
         name = randstr()
         size = randint(0, 1000)
@@ -102,10 +102,10 @@ class ItemsTests(unittest.TestCase):
             "name": name,
             "size": size
         }
-        resp = post("http://"+host+"/api/v1/items", json=item2)
+        resp = post("http://" + gateway_host + "/api/v1/items", json=item2)
         self.assertEqual(resp.status_code, 200)
         item2["id"]=resp.text
-        resp = get("http://"+host+"/api/v1/items")
+        resp = get("http://" + gateway_host + "/api/v1/items")
         result = resp.json()
         self.assertTrue(item1 in result)
         self.assertTrue(item2 in result)
