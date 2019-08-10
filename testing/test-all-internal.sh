@@ -17,7 +17,7 @@ FILES="$COMMON_FILES -f $HERE/docker-compose-items.yml -f $HERE/docker-compose-s
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
-docker system prune -f
+docker network prune -f
 
 docker-compose $COMPOSE_FLAGS up thrive-dependencies
 docker-compose $COMPOSE_FLAGS up --build items-dependencies stats-dependencies
@@ -33,5 +33,6 @@ if [ "$#" -gt 0 ]; then
 fi
 
 docker-compose $COMPOSE_FLAGS rm -sf
+docker network prune -f
 
 exit $EXIT

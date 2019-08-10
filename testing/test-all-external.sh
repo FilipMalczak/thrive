@@ -22,7 +22,7 @@ FILES="$COMMON_FILES"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
-docker system prune -f
+docker network prune -f
 
 docker-compose $COMPOSE_FLAGS up --build thrive-dependencies
 
@@ -47,6 +47,7 @@ fi
 kill $ITEMS_PID
 kill $STATS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
+docker network prune -f
 
 rm -rf $TEST_WORKSPACE
 
