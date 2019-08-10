@@ -22,8 +22,6 @@ FILES="$COMMON_FILES"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
-docker network prune -f
-
 docker-compose $COMPOSE_FLAGS up --build thrive-dependencies
 
 SERVER_PORT=8085 $ROOT_DIR/gradlew :test-items:bootRun &
@@ -47,7 +45,7 @@ fi
 kill $ITEMS_PID
 kill $STATS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
-docker network prune -f
+sleep 5
 
 rm -rf $TEST_WORKSPACE
 

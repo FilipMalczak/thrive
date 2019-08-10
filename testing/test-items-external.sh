@@ -22,8 +22,6 @@ FILES="$COMMON_FILES -f $HERE/docker-compose-stats.yml"
 
 COMPOSE_FLAGS="$FILES $PROJECT"
 
-docker network prune -f
-
 docker-compose $COMPOSE_FLAGS up thrive-dependencies
 docker-compose $COMPOSE_FLAGS up --build stats-dependencies
 
@@ -46,6 +44,6 @@ kill $ITEMS_PID
 docker-compose $COMPOSE_FLAGS rm -sf stats
 
 rm -rf $TEST_WORKSPACE
-docker network prune -f
+sleep 5
 
 exit $EXIT
