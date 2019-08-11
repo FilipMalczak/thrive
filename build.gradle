@@ -61,6 +61,10 @@ allprojects {
         archives sourcesJar
         archives javadocJar
     }
+    
+    jar {
+        enabled = true
+    }
 }
 
 subprojects {
