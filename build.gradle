@@ -48,6 +48,21 @@ allprojects {
             url "https://jitpack.io"
         }
     }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
 }
 
 subprojects {
@@ -66,7 +81,7 @@ subprojects {
     dependencyManagement {
         imports {
             //fixme versioning is weird; maybe base on ext?
-            mavenBom "com.github.thrive-framework:thrive-bom:$thriveBomVersion"
+            mavenBom "com.github.thrive-framework:thrive-bom:dev-SNAPSHOT"
         }
     }
 

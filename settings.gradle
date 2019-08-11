@@ -1,4 +1,4 @@
-rootProject.name = 'thrive-parent'
+rootProject.name = 'thrive'
 
 include "thrive-common"
 include "thrive-admin"
