@@ -75,9 +75,6 @@ issue section.
 
 ## ToDo
 
-- create BOM module for lib version alignment (?)
-- publish BOM to some Maven repo (probably JFrog) (?)
-- sanitize CircleCI (rewrite to cached workflows, use docker-compose with docker executor)
 - add docker image publishing (push to dockerhub) from CI (at `master` and `dev` branches; make sure that test services aren't published)
 - create Gradle plugin for generating `docker-compose.yml` files with curated image lists
 - add support for scaling (many instances of the same service should be reouted with Ribbon in gateway and appear only once in Swagger)

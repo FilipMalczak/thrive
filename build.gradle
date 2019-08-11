@@ -32,9 +32,9 @@ ext {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'groovy'
+    apply plugin: 'maven'
     apply plugin: "com.gorylenko.gradle-git-properties"
 
     group = 'com.github.thrive-framework'
@@ -50,6 +50,10 @@ subprojects {
         maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
         maven { url 'http://oss.jfrog.org/artifactory/oss-release-local/' }
         maven { url 'https://repo.spring.io/milestone' }
+
+        maven {
+            url "https://jitpack.io"
+        }
     }
 
     dependencyManagement {
