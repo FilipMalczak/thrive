@@ -61,10 +61,6 @@ allprojects {
         archives sourcesJar
         archives javadocJar
     }
-    
-    jar {
-        enabled = true
-    }
 }
 
 subprojects {
@@ -116,9 +112,7 @@ subprojects {
             systemProperty "spring.profiles.active", "local"
         }
 
-        project.bootJar {
-            classifier "boot"
-        }
+        project.install.dependsOn project.build
 
         //todo clean should remove this files, same with dockerized project list
         task generateDockerfile(
@@ -135,7 +129,7 @@ WORKDIR /var/opt/${project.name}
 
 LABEL maintainer="Filip Malczak (filip.malczak@gmail.com),version=${project.version}"
 
-COPY ./build/libs/${project.name}-${project.version}-boot.jar ./${project.name}-${project.version}-boot.jar
+COPY ./build/libs/${project.name}-${project.version}.jar ./${project.name}-${project.version}-boot.jar
 
 ENTRYPOINT ["java","-jar","/var/opt/${project.name}/${project.name}-${project.version}-boot.jar"] 
 """ //todo: JAVA_OPTS

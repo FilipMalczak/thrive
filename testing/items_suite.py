@@ -8,7 +8,8 @@ from time import sleep
 
 randstr = lambda: str(uuid4())
 
-WAIT_TIME = 3 # in seconds
+CI_WAIT_TIME = 3 # in seconds
+LOCAL_WAIT_TIME = 1 # in seconds
 
 def is_circleci():
     try:
@@ -18,10 +19,13 @@ def is_circleci():
         return False
 
 is_circleci = is_circleci()
+wait_time = CI_WAIT_TIME if is_circleci else LOCAL_WAIT_TIME
 print "Is CircleCI env?", is_circleci
+print "Wait time is", wait_time
+
 #todo document this
 #fixme or rather remove this
-allow_kafka_to_work = (lambda: sleep(WAIT_TIME if is_circleci else 0))
+allow_kafka_to_work = (lambda: sleep(wait_time))
 
 #todo organize into given/when/then
 class ItemsTests(unittest.TestCase):
