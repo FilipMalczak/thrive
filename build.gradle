@@ -21,8 +21,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gitInfoVersion}"
-        classpath 'com.google.guava:guava:20.0' //fixme wtf is this?
-
     }
 }
 
