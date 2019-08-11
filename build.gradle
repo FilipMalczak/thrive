@@ -30,20 +30,11 @@ ext {
     containerizationGroup = "containerization"
 }
 
-subprojects {
+allprojects {
     apply plugin: 'java-library'
     apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'groovy'
     apply plugin: 'maven'
-    apply plugin: "com.gorylenko.gradle-git-properties"
-
-    group = 'com.github.thrive-framework'
-
-    version = "0.2.0-SNAPSHOT"
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    apply plugin: 'maven-publish'
 
     repositories {
         mavenLocal()
@@ -53,9 +44,24 @@ subprojects {
         maven { url 'https://repo.spring.io/milestone' }
 
         maven {
+            name "jitpack"
             url "https://jitpack.io"
         }
     }
+}
+
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'groovy'
+
+    apply plugin: "com.gorylenko.gradle-git-properties"
+
+    group = 'com.github.thrive-framework'
+
+    version = "0.2.0-SNAPSHOT"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     dependencyManagement {
         imports {
