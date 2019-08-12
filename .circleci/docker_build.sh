@@ -11,5 +11,5 @@ set -ex
 for NAME in $(cat $ROOT_DIR/build/dockerizedProjects.txt)
 do
     VERSION=$(cat $ROOT_DIR/$NAME/build/generated/meta/version.txt)
-    docker build -t filipmalczak/$NAME:$VERSION $ROOT_DIR/$NAME
+    docker build -t thriveframework/$NAME:$VERSION $ROOT_DIR/$NAME
 done
