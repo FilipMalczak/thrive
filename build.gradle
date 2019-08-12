@@ -71,6 +71,11 @@ subprojects {
 
     group = 'com.github.thrive-framework'
 
+    //todo use https://github.com/palantir/gradle-git-version
+    //on tag - version=tag
+    //on branch - if matches d.d.d - use d.d.d-SNAPSHOT
+    //on other branches - (last tag+0.1.0)-FEATURE-number of commits since tag
+    //this keeps all the modules with the same version and that should hopefully work
     version = "0.2.0-SNAPSHOT"
 
     sourceCompatibility = 1.8

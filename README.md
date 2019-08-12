@@ -4,7 +4,7 @@
 >
 > `master` [![CircleCI](https://circleci.com/gh/FilipMalczak/thrive/tree/master.svg?style=svg)](https://circleci.com/gh/FilipMalczak/thrive/tree/master)
 >
-> `dev` [![CircleCI](https://circleci.com/gh/FilipMalczak/thrive/tree/dev.svg?style=svg)](https://circleci.com/gh/FilipMalczak/thrive/tree/dev)
+> Current SNAPSHOT: `0.2.0-SNAPSHOT` [![CircleCI](https://circleci.com/gh/FilipMalczak/thrive/tree/0.2.0.svg?style=svg)](https://circleci.com/gh/FilipMalczak/thrive/tree/dev)
 
 **Thrive is a highly opinionated infrastructure framework for Spring Boot/Cloud 
 based microservices systems.**

@@ -55,11 +55,11 @@ workflows:
           context: DockerHub
           filters:
             branches:
-              only: /*.*.*/
+              only: /^\d*[.]\d*[.]\d*/
       - docker-push-release:
           requires:
             - validate
           context: DockerHub
           filters:
             tags:
-              only: /*.*.*/
+              only: /^\d*[.]\d*[.]\d*/
