@@ -16,13 +16,28 @@ jobs:
       - run: ./testing/test-stats-external.sh
       - run: ./testing/test-all-external.sh
 
-  docker-push:
+  docker-push-snapshot:
     machine:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true
 
     steps:
       - checkout
+      - run: ./gradlew assertIsSnapshot
+      - run: ./gradlew clean build
+      #todo previous step can be faster when using cache
+      - run: ./.circleci/prepare_docker_build.sh
+      - run: ./.circleci/docker_build.sh
+      - run: ./.circleci/push_docker_images.sh
+
+  docker-push-release:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+
+    steps:
+      - checkout
+      - run: ./gradlew assertIsRelease
       - run: ./gradlew clean build
       #todo previous step can be faster when using cache
       - run: ./.circleci/prepare_docker_build.sh
@@ -34,7 +49,17 @@ workflows:
   ci:
     jobs:
       - validate
-      - docker-push:
+      - docker-push-snapshot:
           requires:
             - validate
           context: DockerHub
+          filters:
+            branches:
+              only: /*.*.*/
+      - docker-push-release:
+          requires:
+            - validate
+          context: DockerHub
+          filters:
+            tags:
+              only: /*.*.*/

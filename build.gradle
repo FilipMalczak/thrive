@@ -175,6 +175,25 @@ task listDockerizedProjectsDirectories(
     }
 }
 
+
+task assertIsRelease(
+    group: "assertions",
+    description: "Fails if version ends with any qualifier; else - no-op"
+){
+    doLast {
+        assert !version.contains("-")
+    }
+}
+
+task assertIsSnapshot(
+    group: "assertions",
+    description: "Fails if version doesn't end with '-SNAPSHOT'; else - no-op"
+){
+    doLast {
+        assert version.endsWith("-SNAPSHOT")
+    }
+}
+
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
     gradleVersion = '5.2.1'
