@@ -79,7 +79,7 @@ subprojects {
     dependencyManagement {
         imports {
             //fixme versioning is weird; maybe base on ext?
-            mavenBom "com.github.thrive-framework:thrive-bom:dev-SNAPSHOT"
+            mavenBom "com.github.thrive-framework:thrive-bom:0.2.0-SNAPSHOT"
         }
     }
 
