@@ -12,11 +12,16 @@ buildscript {
         gitInfoVersion     = '2.0.0'
     }
     repositories {
+//        mavenLocal()
         mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
         gradlePluginPortal()
+        maven {
+            name "jitpack"
+            url "https://jitpack.io"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -34,10 +39,10 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: "org.unbroken-dome.gitversion"
 
     group = 'com.github.thrive-framework'
 
-    apply plugin: "org.unbroken-dome.gitversion"
 
     def semverRegex = /(\d+[.]\d+[.]\d+)/
     def versioningContext = [fullyDetermined: false]
@@ -50,7 +55,7 @@ allprojects {
                 def commitsSinceTag = countCommitsSince tag
                 versioningContext.commitsSinceTag = commitsSinceTag
                 version = tag.matches[1]
-                if (commitsSinceTag > 0)
+                if (commitsSinceTag > 0 || branchName != "master")
                     version.incrementMinor()
             }
             onBranch("master"){
@@ -69,7 +74,7 @@ allprojects {
             onBranch(~semverRegex) {
                 def candidate = matches[1]
                 //todo this fixates x.x.0 versions; check whether major and minor are the same and patch is bigger from tagged instead
-                assert "$version" == "$candidate", "Current development branch should be $version, but is ${candidate}!"
+                assert "$version" == "$candidate", "Current development branch should be $version, but is ${candidate}! (context: $versioningContext; tagName: ${versioningContext.tag.tagName})"
                 version.prereleaseTag = "SNAPSHOT"
                 project.ext {
                     projectState = "SNAPSHOT"
@@ -93,7 +98,7 @@ allprojects {
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-    
+
     repositories {
         mavenLocal()
         mavenCentral()
