@@ -124,7 +124,7 @@ If you've copied [docker-compose.yml](./docker-compose.yml) as-is, here's a shor
 your browser to see stuff:
 
 | Address | What you get |
---------------------------
+|---------|--------------|
 | http://localhost:1111 | [Spring Boot Admin](https://github.com/codecentric/spring-boot-admin) - handy dashboard for your system |
 | http://localhost:8080/swagger-ui.html#/ | [SwaggerUI](https://swagger.io/tools/swagger-ui/) for your public API |
 | http://localhost:8080/docs/v1/swagger | OpenAPI Specification that is visualized by SwaggerUI mentioned above | 
