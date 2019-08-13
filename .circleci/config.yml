@@ -17,54 +17,31 @@ jobs:
       - run: ./testing/test-all-external.sh
       #todo store test results (see java example for circle)
 
-  docker-push-snapshot:
+  docker-build-and-push:
     machine:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true
 
     steps:
       - checkout
-      - run: ./gradlew assertIsSnapshot
       - run: ./gradlew clean build
       #todo previous step can be faster when using cache
       - run: ./.circleci/prepare_docker_build.sh
       - run: ./.circleci/docker_build.sh
       - run: ./.circleci/push_docker_images.sh
 
-  docker-push-release:
-    machine:
-      image: ubuntu-1604:201903-01
-      docker_layer_caching: true
-
-    steps:
-      - checkout
-      - run: ./gradlew assertIsRelease
-      - run: ./gradlew clean build
-      #todo previous step can be faster when using cache
-      - run: ./.circleci/prepare_docker_build.sh
-      - run: ./.circleci/docker_build.sh
-      - run: ./.circleci/push_docker_images.sh
 
 workflows:
   version: 2
   ci:
     jobs:
       - validate
-      - docker-push-snapshot:
+      - docker-build-and-push:
           requires:
             - validate
           context: DockerHub
           filters:
             branches:
-              only: /\d+[.]\d+[.]\d+/
-            tags:
-              ignore: /.*/
-      - docker-push-release:
-          requires:
-            - validate
-          context: DockerHub
-          filters:
-            tags:
-              only: /\d+[.]\d+[.]\d+/
-            branches:
-              ignore: /.*/
+              only:
+                - master
+                - /\d+[.]\d+[.]\d+/
