@@ -15,6 +15,7 @@ jobs:
       - run: ./testing/test-items-external.sh
       - run: ./testing/test-stats-external.sh
       - run: ./testing/test-all-external.sh
+      #todo store test results (see java example for circle)
 
   docker-push-snapshot:
     machine:
@@ -55,11 +56,15 @@ workflows:
           context: DockerHub
           filters:
             branches:
-              only: /^\d*[.]\d*[.]\d*/
+              only: /\d+[.]\d+[.]\d+/
+            tags:
+              ignore: /.*/
       - docker-push-release:
           requires:
             - validate
           context: DockerHub
           filters:
             tags:
-              only: /^\d*[.]\d*[.]\d*/
+              only: /\d+[.]\d+[.]\d+/
+            branches:
+              ignore: /.*/
