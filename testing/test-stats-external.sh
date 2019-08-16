@@ -8,7 +8,7 @@ TEST_WORKSPACE=$HERE/workspace
 
 mkdir -p $TEST_WORKSPACE
 
-$ROOT_DIR/gradlew build generateDockerfile
+$ROOT_DIR/gradlew build
 
 wget https://raw.githubusercontent.com/dadarek/docker-wait-for-dependencies/master/entrypoint.sh -O $TEST_WORKSPACE/wait-for-dep.sh
 

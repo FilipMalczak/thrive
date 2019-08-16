@@ -1,3 +1,7 @@
+thrive {
+    library()
+}
+
 dependencies {
     api 'org.springframework.cloud:spring-cloud-starter-zookeeper-config'
     api 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'

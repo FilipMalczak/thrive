@@ -1,6 +1,3 @@
-import java.time.LocalDateTime
-import java.time.ZoneId
-
 //todo exploit gradle caching https://circleci.com/docs/2.0/language-java/
 buildscript {
     ext {
@@ -12,7 +9,6 @@ buildscript {
         gitInfoVersion     = '2.0.0'
     }
     repositories {
-//        mavenLocal()
         mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -24,9 +20,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:${gitInfoVersion}"
-        classpath "gradle.plugin.org.unbroken-dome.gradle-plugins:gradle-gitversion-plugin:0.10.0" //todo version to ext
+        classpath "com.github.thrive-framework:thrive-service-plugin:0.3.0-SNAPSHOT"
+        classpath "com.github.thrive-framework:thrive-versioning-plugin:0.1.0"
     }
 }
 
@@ -35,176 +30,29 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    apply plugin: "org.unbroken-dome.gitversion"
 
     group = 'com.github.thrive-framework'
 
-
-    def semverRegex = /(\d+[.]\d+[.]\d+)/
-    def versioningContext = [fullyDetermined: false]
-
-    gitVersion {
-        rules {
-            before {
-                def tag = findLatestTag(~semverRegex, true)
-                versioningContext.tag = tag
-                def commitsSinceTag = countCommitsSince tag
-                versioningContext.commitsSinceTag = commitsSinceTag
-                version = tag.matches[1]
-                if (commitsSinceTag > 0 || branchName != "master")
-                    version.incrementMinor()
-            }
-            onBranch("master"){
-                if (versioningContext.commitsSinceTag > 0) {
-                    version.prereleaseTag = "RC"
-                    project.ext {
-                        projectState = "RC"
-                    }
-                } else {
-                    project.ext {
-                        projectState = "RELEASE"
-                    }
-                }
-                versioningContext.fullyDetermined = true
-            }
-            onBranch(~semverRegex) {
-                def candidate = matches[1]
-                //todo this fixates x.x.0 versions; check whether major and minor are the same and patch is bigger from tagged instead
-                assert "$version" == "$candidate", "Current development branch should be $version, but is ${candidate}! (context: $versioningContext; tagName: ${versioningContext.tag.tagName})"
-                version.prereleaseTag = "SNAPSHOT"
-                project.ext {
-                    projectState = "SNAPSHOT"
-                }
-                versioningContext.fullyDetermined = true
-            }
-            after {
-                if (!versioningContext.fullyDetermined){
-                    version.prereleaseTag = "FEATURE"
-                    version.buildMetadata = "${branchName.hashCode()}_${versioningContext.commitsSinceTag}"
-                    versioningContext.fullyDetermined = true
-                    project.ext {
-                        projectState = "FEATURE"
-                    }
-                }
-            }
-        }
-    }
-
-    version = gitVersion.determineVersion()
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
-        maven { url 'http://oss.jfrog.org/artifactory/oss-release-local/' }
-        maven { url 'https://repo.spring.io/milestone' }
-
-        maven {
-            name "jitpack"
-            url "https://jitpack.io"
-        }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        archiveClassifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
 }
 
 subprojects {
-    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'groovy'
+    apply plugin: "com.github.thrive"
+    apply plugin: "com.github.thrive-versioning"
 
-    apply plugin: "com.gorylenko.gradle-git-properties"
-
-    dependencyManagement {
-        imports {
-            //fixme versioning is weird; maybe base on ext?
-            mavenBom "com.github.thrive-framework:thrive-bom:0.2.0"
+    thrive {
+        libraries {
+            thriveCommon false
+        }
+        dockerfile {
+            maintainer = "Filip Malczak (filip.malczak@gmail.com)"
         }
     }
 
-    dependencies {
-        compileOnly('org.projectlombok:lombok') //fixme
-        annotationProcessor('org.projectlombok:lombok')
-    }
-
-    pluginManager.withPlugin("org.springframework.boot") {
-        ext {
-            dockerized = true
-        }
-
-        project.springBoot {
-            buildInfo {
-                //todo it would be nice to inject git and build data to manifest as well
-                def tz = ZoneId.systemDefault();
-                def now = LocalDateTime.now().atZone(tz)
-                properties {
-                    time = now.toInstant()
-                    additional = [
-                        timezone: tz.toString(),
-                        timestamp: now.toEpochSecond()
-                    ]
-                }
-            }
-        }
-
-        project.bootRun {
-            systemProperty "spring.profiles.active", "local"
-        }
-
-        project.install.dependsOn project.build
-
-        //todo clean should remove this files, same with dockerized project list
-        task generateDockerfile(
-            group: containerizationGroup,
-            description: "Creates a Dockerfile in project directory"
-        ) {
-            doFirst {
-                new File(project.projectDir, "Dockerfile").text = """
-FROM openjdk:8-jre-alpine
-
-EXPOSE 8080
-
-WORKDIR /var/opt/${project.name}
-
-LABEL maintainer="Filip Malczak (filip.malczak@gmail.com),version=${project.version}"
-
-COPY ./build/libs/${project.name}-${project.version}.jar ./${project.name}-${project.version}-boot.jar
-
-ENTRYPOINT ["java","-jar","/var/opt/${project.name}/${project.name}-${project.version}-boot.jar"] 
-""" //todo: JAVA_OPTS
-            }
-        }
-    }
-
-    task writeVersion(
-        group: containerizationGroup,
-        description: "Writes project version to <subproject build dir>/generated/meta/version.txt"
-    ) {
-        doFirst {
-            def metaDir = new File(project.buildDir, "generated/meta")
-            metaDir.mkdirs()
-            new File(metaDir, "version.txt").text = project.version
-        }
-    }
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 def dockerizedSubprojects() {
@@ -232,9 +80,6 @@ task listDockerizedProjectsDirectories(
             }.join "\n"
     }
 }
-
-println "Project version: $version"
-println "Project state:   $projectState"
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL

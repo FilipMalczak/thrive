@@ -7,7 +7,7 @@ set -ex
 HERE="$(realpath $(dirname "$0"))"
 ROOT_DIR=$HERE/..
 
-$ROOT_DIR/gradlew build generateDockerfile
+$ROOT_DIR/gradlew build
 
 export ROOT_PROJECT=$ROOT_DIR
 

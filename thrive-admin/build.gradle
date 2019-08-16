@@ -1,6 +1,6 @@
-apply plugin: "org.springframework.boot"
-
-//todo at some point I'll need a proper discovery service, but for now it's quite sufficient
+thrive {
+    mainClassName = "com.github.thriveframework.admin.ThriveAdminApp"
+}
 
 dependencies {
     implementation "de.codecentric:spring-boot-admin-starter-server"

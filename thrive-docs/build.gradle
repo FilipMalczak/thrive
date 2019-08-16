@@ -1,4 +1,7 @@
-apply plugin: "org.springframework.boot"
+thrive {
+    mainClassName = "com.github.thriveframework.swagger.SwaggerApp"
+}
+
 apply plugin: 'groovy'
 
 sourceSets.main.java.srcDirs = []
