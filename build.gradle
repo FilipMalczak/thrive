@@ -38,6 +38,7 @@ allprojects {
     // on the other hand, should this be a default when using versioning plugin (because that's where this
     // belongs)? at some point (probably when extracting plugin-commons), do this cleanup
     tasks.findByName("install")?.dependsOn tasks.build
+    
 }
 
 subprojects {
