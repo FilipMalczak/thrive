@@ -43,6 +43,7 @@ allprojects {
 subprojects {
     apply plugin: 'groovy'
     apply plugin: "com.github.thrive"
+    apply plugin: "com.github.thrive-package"
 
     thrive {
         libraries {
@@ -50,6 +51,30 @@ subprojects {
         }
         dockerfile {
             maintainer = "Filip Malczak (filip.malczak@gmail.com)"
+        }
+    }
+
+
+    //todo candidates to be moved to service/versioning plugin (probably the former)
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourcesJar
+                artifact javadocJar
+                artifact packageJar //todo this should be done by packaging plugin
+            }
         }
     }
 
