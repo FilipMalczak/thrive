@@ -4,6 +4,17 @@ thrive {
 
 apply plugin: 'groovy'
 
+apply plugin: "com.github.thrive-package"
+
+thrivePackage {
+    services {
+        //todo rethink service name; thrive-docs?
+        "docs" {
+            image = "thriveframework/thrive-docs:${project.version}"
+        }
+    }
+}
+
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
 

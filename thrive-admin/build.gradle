@@ -2,6 +2,18 @@ thrive {
     mainClassName = "com.github.thriveframework.admin.ThriveAdminApp"
 }
 
+apply plugin: "com.github.thrive-package"
+
+thrivePackage {
+    services {
+        //todo rethink service name; thrive-admin?
+        "spring-boot-admin" {
+            image = "thriveframework/thrive-admin:${project.version}"
+            port 1111, 8080
+        }
+    }
+}
+
 dependencies {
     implementation "de.codecentric:spring-boot-admin-starter-server"
     implementation "org.springframework.boot:spring-boot-starter-web"

@@ -9,29 +9,29 @@ buildscript {
         gitInfoVersion     = '2.0.0'
     }
     repositories {
+        mavenLocal()
         mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        gradlePluginPortal()
         maven {
             name "jitpack"
             url "https://jitpack.io"
         }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "com.github.thrive-framework:thrive-service-plugin:0.3.0-SNAPSHOT"
         classpath "com.github.thrive-framework:thrive-versioning-plugin:0.1.0"
+        classpath "com.github.thrive-framework:thrive-package-plugin:0.1.0-SNAPSHOT"
     }
 }
 
 ext {
-    containerizationGroup = "containerization"
+    containerizationGroup = "thrive (docker)"
 }
 
 allprojects {
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: "com.github.thrive-versioning"
 
     group = 'com.github.thrive-framework'
 
@@ -40,7 +40,6 @@ allprojects {
 subprojects {
     apply plugin: 'groovy'
     apply plugin: "com.github.thrive"
-    apply plugin: "com.github.thrive-versioning"
 
     thrive {
         libraries {
@@ -83,5 +82,5 @@ task listDockerizedProjectsDirectories(
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = '5.2.1'
+    gradleVersion = '5.5'
 }
