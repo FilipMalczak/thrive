@@ -9,7 +9,6 @@ buildscript {
         gitInfoVersion     = '2.0.0'
     }
     repositories {
-        mavenLocal()
         mavenCentral()
         maven {
             name "jitpack"
@@ -35,6 +34,10 @@ allprojects {
 
     group = 'com.github.thrive-framework'
 
+    //todo this is tricky - without it, artifacts may not be built before install;
+    // on the other hand, should this be a default when using versioning plugin (because that's where this
+    // belongs)? at some point (probably when extracting plugin-commons), do this cleanup
+    tasks.findByName("install")?.dependsOn tasks.build
 }
 
 subprojects {
