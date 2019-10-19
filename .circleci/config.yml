@@ -3,7 +3,6 @@ jobs:
   validate:
     machine:
       image: ubuntu-1604:201903-01
-      docker_layer_caching: true
 
     steps:
       - checkout
@@ -18,7 +17,6 @@ jobs:
   docker-build-and-push:
     machine:
       image: ubuntu-1604:201903-01
-      docker_layer_caching: true
 
     steps:
       - checkout
