@@ -5,4 +5,7 @@ thrive {
 
 dependencies {
     implementation project(":thrive-common")
+    implementation "com.github.thrive-framework:thrive-mongodb-support:0.1.0-SNAPSHOT"
+//    implementation "com.github.thrive-framework:thrive-mongodb-support-package:0.1.0-SNAPSHOT"
+    includePackage "com.github.thrive-framework.thrive-mongodb-support:thrive-mongodb-support-package:0.1.0-SNAPSHOT"
 }

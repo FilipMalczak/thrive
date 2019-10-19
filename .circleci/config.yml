@@ -8,8 +8,6 @@ jobs:
     steps:
       - checkout
       - run: ./gradlew clean build
-      - run: ./.circleci/prepare_docker_build.sh
-      - run: ./.circleci/docker_build.sh
       - run: ./testing/prepare-python.sh
       - run: ./testing/test-all-internal.sh
       - run: ./testing/test-items-external.sh
@@ -26,8 +24,6 @@ jobs:
       - checkout
       - run: ./gradlew clean build
       #todo previous step can be faster when using cache
-      - run: ./.circleci/prepare_docker_build.sh
-      - run: ./.circleci/docker_build.sh
       - run: ./.circleci/push_docker_images.sh
 
 

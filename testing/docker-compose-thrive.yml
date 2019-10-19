@@ -38,6 +38,10 @@ services:
     ports:
       - "8080:8080"
 
+  mongo:
+    image: mongo:4.0.4
+
+  #it sucks that mongo needs to be in thrive deps, but its temporary
   thrive-dependencies:
     image: dadarek/wait-for-dependencies
     depends_on:
@@ -47,6 +51,7 @@ services:
       - docs
       - swaggerui
       - gateway
+      - mongo
     links:
       - zookeeper
       - kafka
@@ -54,7 +59,8 @@ services:
       - docs
       - swaggerui
       - gateway
+      - mongo
     environment:
       - SLEEP_LENGTH=1
       - TIMEOUT_LENGTH=60
-    command: zookeeper:2181 kafka:9092 spring-boot-admin:8080 docs:8080 swaggerui:8080 gateway:8080
+    command: zookeeper:2181 kafka:9092 spring-boot-admin:8080 docs:8080 swaggerui:8080 gateway:8080 mongo:27017

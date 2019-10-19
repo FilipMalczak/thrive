@@ -5,13 +5,22 @@ thrive {
 apply plugin: "com.github.thrive-package"
 
 thrivePackage {
-    services {
+    dependsOnCoreServices = false
+    layout {
         //todo rethink service name; thrive-gateway?
-        "gateway" {
-            image = "thriveframework/thrive-gateway:${project.version}"
-            port 8080
+        core {
+            mainService {
+                name = "gateway"
+                image = "thriveframework/thrive-gateway:${project.version}"
+                port 8080
+                runtimeDependency "swaggerui"
 
+            }
         }
+        profiles = [
+            prod: [],
+            local: ['local', 'ui']
+        ]
     }
 }
 

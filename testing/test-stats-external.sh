@@ -41,6 +41,7 @@ if [ "$#" -gt 0 ]; then
 fi
 
 kill $STATS_PID
+wait $STATS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
 
 rm -rf $TEST_WORKSPACE

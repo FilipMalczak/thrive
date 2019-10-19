@@ -20,6 +20,7 @@ class SwaggerMerger {
             def fullUrl = url+"/v2/api-docs?group=api"
             log.info("Gonna parse $fullUrl")
             slurper.parse(new URL(fullUrl)).with { parsed ->
+                log.debug "Parsed: ${JsonOutput.prettyPrint(JsonOutput.toJson(parsed))}"
                 if (parsed.tags)
                     json.tags += parsed.tags //todo make them unique
                 (parsed.paths as Map).each { path, methodToDesc ->
@@ -34,6 +35,8 @@ class SwaggerMerger {
                 json.definitions.putAll(parsed.definitions ?: [:])
             }
         }
-        return JsonOutput.toJson(json)
+        def out = JsonOutput.toJson(json)
+        log.debug "Output: ${JsonOutput.prettyPrint(out)}"
+        return out
     }
 }

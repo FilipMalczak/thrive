@@ -44,6 +44,8 @@ fi
 
 kill $ITEMS_PID
 kill $STATS_PID
+wait $ITEMS_PID
+wait $STATS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
 
 

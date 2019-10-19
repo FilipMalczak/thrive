@@ -31,7 +31,7 @@ ITEMS_PID=$!
 $TEST_WORKSPACE/wait-for-dep.sh localhost:8085
 
 set +e
-python $HERE/items_suite.py
+python $HERE/items_suite.py -b
 
 EXIT=$?
 
@@ -41,9 +41,9 @@ if [ "$#" -gt 0 ]; then
 fi
 
 kill $ITEMS_PID
+wait $ITEMS_PID
 docker-compose $COMPOSE_FLAGS rm -sf
 
 rm -rf $TEST_WORKSPACE
-
 
 exit $EXIT

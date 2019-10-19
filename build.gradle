@@ -28,22 +28,15 @@ ext {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: "com.github.thrive-versioning"
 
     group = 'com.github.thrive-framework'
-
-    //todo this is tricky - without it, artifacts may not be built before install;
-    // on the other hand, should this be a default when using versioning plugin (because that's where this
-    // belongs)? at some point (probably when extracting plugin-commons), do this cleanup
-    install.dependsOn tasks.build
 }
 
 subprojects {
     apply plugin: 'groovy'
     apply plugin: "com.github.thrive"
-    apply plugin: "com.github.thrive-package"
 
     thrive {
         libraries {
@@ -54,57 +47,22 @@ subprojects {
         }
     }
 
+    if (name != "thrive-common") {
+//        //todo candidates to be moved to service/versioning plugin (probably the former)
 
-    //todo candidates to be moved to service/versioning plugin (probably the former)
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from sourceSets.main.allSource
-    }
+        apply plugin: "com.github.thrive-package"
 
-    task javadocJar(type: Jar) {
-        archiveClassifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-
-                artifact sourcesJar
-                artifact javadocJar
-                artifact packageJar //todo this should be done by packaging plugin
-            }
+        //fixme this needs to be for a single commit, so that core services can be built before we configure test ones
+        thrivePackage {
+            dependsOnCoreServices = false
         }
-    }
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-def dockerizedSubprojects() {
-    subprojects
-        .findAll {
-            try {
-                it.dockerized
-            } catch (MissingPropertyException e){
-                false
-            }
-        }
-}
-
-//fixme it will work as long as no-one will change project name; project names need to be the same as dir names and only 1-level hierarchy is allowed for now
-task listDockerizedProjectsDirectories(
-    group: containerizationGroup,
-    description: "Writes dockerized subproject names to <root project build dir>/dockerizedProjects.txt, one per line"
-) {
-    doFirst {
-        project.buildDir.mkdirs()
-        new File(project.buildDir, "dockerizedProjects.txt").text = dockerizedSubprojects()
-            .collect {
-                println "Found dockerized project ${it.name}"
-                it.name
-            }.join "\n"
+        
+        //todo this shouldnt be needd, but should be a part of API when working with subprojects
+        // probaly by exclude list
+        
+        writeDockerCompose.dependsOn ":thrive-gateway:preparePackageDir"
+        writeDockerCompose.dependsOn ":thrive-admin:preparePackageDir"
+        writeDockerCompose.dependsOn ":thrive-docs:preparePackageDir"
     }
 }
 

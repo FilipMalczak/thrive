@@ -7,10 +7,14 @@ apply plugin: 'groovy'
 apply plugin: "com.github.thrive-package"
 
 thrivePackage {
-    services {
+    dependsOnCoreServices = false
+    layout {
         //todo rethink service name; thrive-docs?
-        "docs" {
-            image = "thriveframework/thrive-docs:${project.version}"
+        core {
+            mainService {
+                name = "docs"
+                image = "thriveframework/thrive-docs:${project.version}"
+            }
         }
     }
 }
